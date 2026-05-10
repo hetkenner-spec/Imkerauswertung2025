@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Imkerei 2025 – Jahresauswertung Bienenstand Hochstrasse</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --honey: #D4820A;
+    --honey-light: #FFF3D6;
+    --honey-mid: #F5C842;
+    --forest: #2D5A27;
+    --forest-light: #EAF3DE;
+    --bark: #6B4423;
+    --sky: #4A8FA8;
+    --sky-light: #E6F4F8;
+    --cream: #FAF7F0;
+    --paper: #F4EFE4;
+    --text-dark: #1C1207;
+    --text-mid: #4A3B28;
+    --text-mute: #8A7A62;
+    --border: rgba(107,68,35,0.15);
+    --shadow: 0 2px 16px rgba(30,15,0,0.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--forest);
+    color: #fff;
+    padding: 2.5rem 2rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    right: -60px; top: -60px;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+  }
+  header::after {
+    content: '🐝';
+    position: absolute;
+    right: 3rem; top: 50%;
+    transform: translateY(-50%);
+    font-size: 5rem;
+    opacity: 0.18;
+  }
+  .header-inner { max-width: 960px; margin: 0 auto; }
+  header h1 {
+    font-family: 'Lora', serif;
+    font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.4rem;
+  }
+  header p { font-size: 1rem; opacity: 0.75; }
+  .header-badges {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-top: 1.2rem;
+  }
+  .hbadge {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+
+  /* LAYOUT */
+  main { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  /* TABS */
+  .tabs {
+    display: flex; gap: 4px;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+  .tab {
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--text-mute);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    border-radius: 4px 4px 0 0;
+    transition: all 0.15s;
+    font-family: 'Source Sans 3', sans-serif;
+  }
+  .tab:hover { color: var(--honey); background: var(--honey-light); }
+  .tab.active { color: var(--honey); border-bottom-color: var(--honey); background: var(--honey-light); }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* METRIC CARDS */
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 12px;
+    margin-bottom: 2rem;
+  }
+  .metric {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    box-shadow: var(--shadow);
+  }
+  .metric-icon { font-size: 1.3rem; margin-bottom: 6px; }
+  .metric-value { font-family: 'Lora', serif; font-size: 1.6rem; font-weight: 600; color: var(--honey); }
+  .metric-label { font-size: 12px; color: var(--text-mute); margin-top: 3px; }
+  .metric-sub { font-size: 11px; color: var(--text-mute); margin-top: 2px; opacity: 0.8; }
+
+  /* SUMMARY BOX */
+  .summary-box {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--honey);
+    border-radius: 0 12px 12px 0;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
+  }
+  .summary-box h4 {
+    font-family: 'Lora', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--bark);
+    margin-bottom: 10px;
+  }
+  .summary-box ul { padding-left: 18px; }
+  .summary-box li { font-size: 13.5px; margin-bottom: 5px; line-height: 1.6; color: var(--text-mid); }
+  .summary-box li strong { color: var(--text-dark); }
+
+  /* VOLK CARDS */
+  .volk-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px;
+    margin-bottom: 2rem;
+  }
+  .volk-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: var(--shadow);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .volk-card:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(30,15,0,0.12); }
+  .volk-card.top { border-top: 3px solid var(--honey); }
+  .volk-card.problem { border-top: 3px solid #E24B4A; }
+  .volk-card.weak { border-top: 3px solid var(--sky); }
+  .volk-card.swarm { border-top: 3px solid var(--forest); }
+
+  .volk-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+  .volk-title { font-family: 'Lora', serif; font-size: 15px; font-weight: 600; color: var(--text-dark); }
+  .volk-sub { font-size: 11px; color: var(--text-mute); margin-top: 2px; }
+
+  .badge { font-size: 11px; padding: 3px 9px; border-radius: 20px; font-weight: 500; white-space: nowrap; }
+  .badge-green { background: #EAF3DE; color: #2D5A27; }
+  .badge-amber { background: #FFF3D6; color: #854F0B; }
+  .badge-red { background: #FCEBEB; color: #A32D2D; }
+  .badge-blue { background: #E6F4F8; color: #1D6F8A; }
+  .badge-gray { background: #F1EFE8; color: #5F5E5A; }
+
+  .volk-facts { font-size: 12.5px; color: var(--text-mid); line-height: 1.9; }
+  .volk-facts span { color: var(--text-dark); font-weight: 500; }
+  .honey-bar-wrap { margin-top: 10px; }
+  .honey-bar-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-mute); margin-bottom: 4px; }
+  .honey-bar { height: 6px; background: var(--paper); border-radius: 3px; overflow: hidden; }
+  .honey-bar-fill { height: 100%; background: linear-gradient(90deg, var(--honey-mid), var(--honey)); border-radius: 3px; transition: width 0.6s ease; }
+
+  /* TIMELINE */
+  .filter-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.25rem; }
+  .filter-btn {
+    font-size: 12px; padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: #fff;
+    cursor: pointer;
+    color: var(--text-mute);
+    font-family: 'Source Sans 3', sans-serif;
+    transition: all 0.15s;
+  }
+  .filter-btn:hover { border-color: var(--honey); color: var(--honey); }
+  .filter-btn.on { background: var(--honey); color: #fff; border-color: var(--honey); }
+
+  .timeline { position: relative; padding-left: 28px; }
+  .tl-item { position: relative; padding-bottom: 20px; }
+  .tl-item:last-child { padding-bottom: 0; }
+  .tl-dot {
+    position: absolute; left: -24px; top: 5px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--text-mute);
+    border: 2px solid var(--cream);
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
+  }
+  .tl-dot.honey { background: var(--honey); }
+  .tl-dot.swarm { background: #E24B4A; }
+  .tl-dot.queen { background: #7F77DD; }
+  .tl-dot.varroa { background: var(--forest); }
+  .tl-dot.feed { background: var(--sky); }
+  .tl-dot.inspect { background: #B4B2A9; }
+  .tl-line {
+    position: absolute; left: -18px; top: 17px; bottom: 0;
+    width: 1px; background: var(--border);
+  }
+  .tl-date { font-size: 11px; color: var(--text-mute); margin-bottom: 2px; font-weight: 500; }
+  .tl-text { font-size: 13.5px; color: var(--text-dark); line-height: 1.55; }
+  .tl-volk { font-size: 11px; color: var(--honey); margin-top: 3px; font-weight: 500; }
+
+  /* CHART */
+  .chart-wrap { position: relative; width: 100%; height: 260px; margin-bottom: 1.5rem; }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--text-mute); margin-bottom: 1.25rem; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; margin-right: 5px; vertical-align: middle; }
+
+  /* SECTION HEADING */
+  .section-head {
+    font-family: 'Lora', serif;
+    font-size: 1.1rem; font-weight: 600;
+    color: var(--bark);
+    margin-bottom: 1.25rem;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-mute);
+    padding: 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 600px) {
+    header h1 { font-size: 1.4rem; }
+    header::after { display: none; }
+    .tab { padding: 8px 11px; font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <h1>Imkerei 2025 – Jahresauswertung</h1>
+    <p>Bienenstand Hochstrasse &nbsp;·&nbsp; Stockkartenauswertung mit Claude KI</p>
+    <div class="header-badges">
+      <span class="hbadge">🐝 8 Völker</span>
+      <span class="hbadge">🍯 ~130 kg Honig</span>
+      <span class="hbadge">👑 6 Umweiselung</span>
+      <span class="hbadge">🔬 Nassenheider + Oxalsäure</span>
+      <span class="hbadge">📅 Jan–Nov 2025</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('overview',this)">📊 Übersicht</button>
+    <button class="tab" onclick="showTab('voelker',this)">🐝 Völker</button>
+    <button class="tab" onclick="showTab('timeline',this)">📅 Chronik</button>
+    <button class="tab" onclick="showTab('varroa',this)">🔬 Varroa</button>
+    <button class="tab" onclick="showTab('honig',this)">🍯 Honigernte</button>
+  </div>
+
+  <!-- ÜBERSICHT -->
+  <div id="tab-overview" class="section active">
+    <div class="metrics">
+      <div class="metric"><div class="metric-icon">🐝</div><div class="metric-value">8</div><div class="metric-label">Völker 2025</div><div class="metric-sub">davon 7 aktiv</div></div>
+      <div class="metric"><div class="metric-icon">🍯</div><div class="metric-value">~130 kg</div><div class="metric-label">Honigernte gesamt</div><div class="metric-sub">alle Wirtschaftsvölker</div></div>
+      <div class="metric"><div class="metric-icon">🐝</div><div class="metric-value">1</div><div class="metric-label">Schwarmabgang</div><div class="metric-sub">Volk 2, 02. Mai</div></div>
+      <div class="metric"><div class="metric-icon">👑</div><div class="metric-value">6</div><div class="metric-label">Umweiselung</div><div class="metric-sub">neue RZ-Königinnen</div></div>
+      <div class="metric"><div class="metric-icon">🔬</div><div class="metric-value">Aug</div><div class="metric-label">Varroa-Behandlung</div><div class="metric-sub">Nassenheider + Oxalsäure</div></div>
+      <div class="metric"><div class="metric-icon">🌿</div><div class="metric-value">2</div><div class="metric-label">Ableger</div><div class="metric-sub">Volk 6 & Volk 9</div></div>
+    </div>
+
+    <div class="summary-box">
+      <h4>Jahresrückblick 2025 auf einen Blick</h4>
+      <ul>
+        <li><strong>Winter / Frühjahr:</strong> Alle 8 Völker haben 2-zargig überwintert. Erste Reinigungsflüge Anfang Januar bei ca. 8–10°C.</li>
+        <li><strong>März – April:</strong> Erste Durchsichten ab Mitte März. Volk 1 sehr aggressiv; Volk 4 stark und ruhig mit sichtbarer Königin.</li>
+        <li><strong>Mai:</strong> Tracht beginnt ~28. April. Honigraum-Aufsetzen bei allen Wirtschaftsvölkern. Schwarmabgang Volk 2 (02. Mai, eingefangen → neues Volk 7). Intensive Schwarmkontrollen und Maßnahmen bei Völkern 4, 5, 6.</li>
+        <li><strong>Juni:</strong> Alle Wirtschaftsvölker (4, 5, 6) in Vollbetrieb. Erste Honigernte Ende Mai (~10 kg/Volk). Zweite Ernte Mitte Juni.</li>
+        <li><strong>Juli – August:</strong> Dritte Honigernte. Umweiselung von 6 Völkern mit Miller-Käfig-Methode (RZ-Königinnen Schramberger). Varroa-Behandlung mit Nassenheider (180 ml AS 60%).</li>
+        <li><strong>August – September:</strong> Varroaabfall stark rückläufig. Eingefüttert ca. 13 kg API-Invert je Volk. Volk 2 nach Schwarm sehr schwach – wird beobachtet.</li>
+        <li><strong>Oktober – November:</strong> Oxalsäure-Schlussbehandlung (Varrox Eddie). Dämmplatten eingelegt. Alle Völker eingewintert.</li>
+      </ul>
+    </div>
+
+    <p class="section-head" style="margin-top:1.5rem">Honigertrag 2025 vs. 2024</p>
+    <div class="chart-wrap" style="height:220px">
+      <canvas id="chartOverview" role="img" aria-label="Balkendiagramm Honigertrag 2025 vs 2024 je Volk">Honigertrag: Volk 4: 30 kg (2025), 28 kg (2024). Volk 5: 30 kg (2025). Volk 6: 30 kg (2025), 25 kg (2024). Volk 7: 10 kg (2025). Volk 1: 0 kg (2025), 25 kg (2024). Volk 2: 0 kg (geschwärmt).</canvas>
+    </div>
+    <div class="legend">
+      <span><span class="legend-dot" style="background:#D4820A"></span>2025</span>
+      <span><span class="legend-dot" style="background:#85B7EB"></span>2024</span>
+    </div>
+  </div>
+
+  <!-- VÖLKER -->
+  <div id="tab-voelker" class="section">
+    <p class="section-head">Volksstatus und Charakteristik 2025</p>
+    <div class="volk-grid">
+
+      <div class="volk-card problem">
+        <div class="volk-head">
+          <div><div class="volk-title">Volk 1 · Nr. 11</div><div class="volk-sub">Hochstrasse · RZ Schramberger</div></div>
+          <span class="badge badge-amber">Problematisch</span>
+        </div>
+        <div class="volk-facts">
+          Honig 2025: <span>0 kg</span> · 2024: <span>25 kg</span><br>
+          Königin: <span>52-Blau (neu Juli 2025)</span><br>
+          <span style="color:#A32D2D">Sehr aggressiv. 1. neue Königin nicht angenommen. 2. Anlauf erfolgreich. Oxalbehandlung Aug. (brutfrei).</span>
+        </div>
+        <div class="honey-bar-wrap">
+          <div class="honey-bar-label"><span>Honigertrag 2025</span><span>0 kg</span></div>
+          <div class="honey-bar"><div class="honey-bar-fill" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <div class="volk-card weak">
+        <div class="volk-head">
+          <div><div class="volk-title">Volk 2 · Nr. 2</div><div class="volk-sub">Hochstrasse · SZ-Königin 2025</div></div>
+          <span class="badge badge-blue">Geschwärmt</span>
+        </div>
+        <div class="volk-facts">
+          Honig 2025: <span>0 kg</span> · 2024: <span>13 kg</span><br>
+          Schwarm: <span>02. Mai → Volk 7</span><br>
+          <span style="color:#1D6F8A">Nach Schwarm sehr schwach (3–4 BW Brut). Neue SZ-Königin. Evt. Vereinigung mit Volk 8.</span>
+        </div>
+        <div class="honey-bar-wrap">
+          <div class="honey-bar-label"><span>Honigertrag 2025</span><span>0 kg</span></div>
+          <div class="honey-bar"><div class="honey-bar-fill" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <div class="volk-card top">
+        <div class="volk-head">
+          <div><div class="volk-title">Volk 4 · Nr. 10 ⭐</div><div class="volk-sub">Hochstrasse · RZ Schramberger</div></div>
+          <span class="badge badge-green">Top-Volk</span>
+        </div>
+        <div class="volk-facts">
+          Honig 2025: <span>~30 kg</span> · 2024: <span>28 kg</span><br>
+          Königin: <span>14-Blau (neu Juli 2025)</span><br>
+          3 × Ernte · Umgestellt 04. Mai<br>
+          <span style="color:#2D5A27">Stärkstes Wirtschaftsvolk. Sehr ruhig. Schwarmtrieb durch Umstellen gelöscht.</span>
+        </div>
+        <div class="honey-bar-wrap">
+          <div class="honey-bar-label"><span>Honigertrag 2025</span><span>30 kg</span></div>
+          <div class="honey-bar"><div class="honey-bar-fill" style="width:100%"></div></div>
+        </div>
+      </div>
+
+      <div class="volk-card top">
+        <div class="volk-head">
+          <div><div class="volk-title">Volk 5 · A1 ⭐</div><div class="volk-sub">Hochstrasse · Sammelbrutableger 2024</div></div>
+          <span class="badge badge-green">Top-Volk</span>
+        </div>
+        <div class="volk-facts">
+          Honig 2025: <span>~30 kg</span><br>
+          Königin: <span>ohne Zeichen</span><br>
+          3 × Ernte · Umgestellt 04. Mai<br>
+          <span style="color:#2D5A27">Aus Ableger 2024 zum stärksten Trachtvolk. Starker Schwarmtrieb Mai – durch Umstellen gelöscht.</span>
+        </div>
+        <div class="honey-bar-wrap">
+          <div class="honey-bar-label"><span>Honigertrag 2025</span><span>30 kg</span></div>
+          <div class="honey-bar"><div class="honey-bar-fill" style="width:100%"></div></div>
+        </div>
+      </div>
+
+      <div class="volk-card top">
+        <div class="volk-head">
+          <div><div class="volk-title">Volk 6 · Nr. 1 ⭐</div><div class="volk-sub">Hochstrasse · RZ Schramberger</div></div>
+          <span class="badge badge-green">Top-Volk</span>
+        </div>
+        <div class="volk-facts">
+          Honig 2025: <span>~30 kg</span> · 2024: <span>25 kg</span><br>
+          Königin: <span>55-Blau (neu Juli 2025)</span><br>
+          Zwischenableger Mai · 3 × Ernte<br>
+          <span style="color:#2D5A27">1. neue Königin abgelehnt, 2. erfolgreich angenommen. Starkes Trachtvolk.</span>
+        </div>
+        <div class="honey-bar-wrap">
+          <div class="honey-bar-label"><span>Honigertrag 2025</span><span>30 kg</span></div>
+          <div class="honey-bar"><div class="honey-bar-fill" style="width:100%"></div></div>
+        </div>
+      </div>
+
+      <div class="volk-card swarm">
+        <div class="volk-head">
+          <div><div class="volk-title">Volk 7 · Schwarm</div><div class="volk-sub">Hochstrasse · aus Volk 2</div></div>
+          <span class="badge badge-green">Gut entwickelt</span>
+        </div>
+        <div class="volk-facts">
+          Honig 2025: <span>~10 kg</span><br>
+          Königin: <span>29-Blau (neu Juli 2025)</span><br>
+          Eingeschlagen 02. Mai<br>
+          <span style="color:#2D5A27">Entwickelte sich gut. Zwei Honigräume, 1 Ernte. Problemlos einzuwintern.</span>
+        </div>
+        <div class="honey-bar-wrap">
+          <div class="honey-bar-label"><span>Honigertrag 2025</span><span>10 kg</span></div>
+          <div class="honey-bar"><div class="honey-bar-fill" style="width:33%"></div></div>
+        </div>
+      </div>
+
+      <div class="volk-card">
+        <div class="volk-head">
+          <div><div class="volk-title">Volk 9 · Nr. 7</div><div class="volk-sub">Hochstrasse · Ableger 2025</div></div>
+          <span class="badge badge-gray">Ableger</span>
+        </div>
+        <div class="volk-facts">
+          Honig 2025: <span>0 kg</span><br>
+          Weiselprobe aus Volk 7<br>
+          <span style="color:#5F5E5A">Entwicklung wird beobachtet. Kein Ertrag als Ableger erwartet.</span>
+        </div>
+        <div class="honey-bar-wrap">
+          <div class="honey-bar-label"><span>Honigertrag 2025</span><span>0 kg</span></div>
+          <div class="honey-bar"><div class="honey-bar-fill" style="width:0%"></div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CHRONIK -->
+  <div id="tab-timeline" class="section">
+    <p class="section-head">Imkerjahr 2025 – Chronik der wichtigsten Ereignisse</p>
+    <div class="filter-bar">
+      <button class="filter-btn on" onclick="filterTl('all',this)">Alle Ereignisse</button>
+      <button class="filter-btn" onclick="filterTl('honey',this)">🍯 Honigernte</button>
+      <button class="filter-btn" onclick="filterTl('swarm',this)">🐝 Schwarm</button>
+      <button class="filter-btn" onclick="filterTl('queen',this)">👑 Königin</button>
+      <button class="filter-btn" onclick="filterTl('varroa',this)">🔬 Varroa</button>
+      <button class="filter-btn" onclick="filterTl('feed',this)">🍬 Fütterung</button>
+    </div>
+    <div class="timeline" id="tlContainer"></div>
+  </div>
+
+  <!-- VARROA -->
+  <div id="tab-varroa" class="section">
+    <p class="section-head">Varroabehandlung & -kontrolle 2025</p>
+    <div class="metrics" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">
+      <div class="metric"><div class="metric-icon">📅</div><div class="metric-value">01. Aug</div><div class="metric-label">Behandlungsbeginn</div><div class="metric-sub">Nassenheider</div></div>
+      <div class="metric"><div class="metric-icon">💧</div><div class="metric-value">AS 60%</div><div class="metric-label">Methode</div><div class="metric-sub">180 ml, mittlerer Docht</div></div>
+      <div class="metric"><div class="metric-icon">🔬</div><div class="metric-value">13. Nov</div><div class="metric-label">Schlussbehandlung</div><div class="metric-sub">Varrox Eddie</div></div>
+      <div class="metric"><div class="metric-icon">✅</div><div class="metric-value">&lt; 10</div><div class="metric-label">Milben/Tag (Okt)</div><div class="metric-sub">Behandlung erfolgreich</div></div>
+    </div>
+
+    <div class="summary-box">
+      <h4>Behandlungsverlauf im Überblick</h4>
+      <ul>
+        <li><strong>01. Aug (Trachende):</strong> Kaum Milbenabfall – erster Messzeitraum unauffällig.</li>
+        <li><strong>10. Aug:</strong> Nassenheider Verdunster eingesetzt (180 ml Ameisensäure 60%, 18–28°C).</li>
+        <li><strong>16. Aug (nach 6 Tagen):</strong> Starker Milbenabfall. V4, V5, V6: sehr viele. V1, V2, V7, V9: viele.</li>
+        <li><strong>24. Aug (Spitzentag):</strong> V1: 50+, V2: 100+, V4: 50–100, V5: 100+, V6: 100+, V7: 50+, V9: 30+, V10: 50+.</li>
+        <li><strong>04. Sep (nach 11 Tagen):</strong> Deutlich abnehmend – V1: 5, V2: 2, V4: 15, V5: 13, V6: 10, V7: 8, V9: 2.</li>
+        <li><strong>14. Sep (nach 10 Tagen):</strong> Weiterhin rückläufig – V1: 9, V2: 15, V4: 26, V5: 12, V6: 8.</li>
+        <li><strong>25. Okt (nach 4–5 Wochen):</strong> Alle Völker unter 10 Milben/Tag – Behandlung erfolgreich abgeschlossen.</li>
+        <li><strong>07. Nov:</strong> Oxalbehandlung V1 & V6 (nahezu brutfrei – idealer Zeitpunkt für Oxalsäure).</li>
+        <li><strong>13. Nov:</strong> Schlussbehandlung alle Völker mit Varrox Eddie (Oxalsäureverdampfung).</li>
+      </ul>
+    </div>
+
+    <p class="section-head" style="margin-top:1.5rem">Milbenabfall-Verlauf (geschätzte Tagesdurchschnitte)</p>
+    <div class="chart-wrap" style="height:240px">
+      <canvas id="chartVarroa" role="img" aria-label="Liniendiagramm Varroaabfall 2025">Milbenabfall stark steigend bis 24. Aug., dann deutlich abnehmend bis Oktober kaum noch Milben.</canvas>
+    </div>
+    <div class="legend">
+      <span><span class="legend-dot" style="background:#D4820A"></span>Volk 4 (höchster Befall)</span>
+      <span><span class="legend-dot" style="background:#7F77DD"></span>Volk 1</span>
+      <span><span class="legend-dot" style="background:#2D5A27"></span>Volk 2 (geringster)</span>
+    </div>
+  </div>
+
+  <!-- HONIGERNTE -->
+  <div id="tab-honig" class="section">
+    <p class="section-head">Honigernte 2025</p>
+    <div class="metrics">
+      <div class="metric"><div class="metric-icon">🍯</div><div class="metric-value">~130 kg</div><div class="metric-label">Gesamtertrag 2025</div></div>
+      <div class="metric"><div class="metric-icon">📅</div><div class="metric-value">3 ×</div><div class="metric-label">Ernten je Volk</div><div class="metric-sub">Völker 4, 5, 6</div></div>
+      <div class="metric"><div class="metric-icon">1️⃣</div><div class="metric-value">31. Mai</div><div class="metric-label">1. Ernte</div><div class="metric-sub">~10 kg/Volk</div></div>
+      <div class="metric"><div class="metric-icon">2️⃣</div><div class="metric-value">19. Jun</div><div class="metric-label">2. Ernte</div><div class="metric-sub">~10 kg/Volk</div></div>
+      <div class="metric"><div class="metric-icon">3️⃣</div><div class="metric-value">11. Aug</div><div class="metric-label">3. Ernte</div><div class="metric-sub">~10+ kg/Volk</div></div>
+    </div>
+
+    <div class="chart-wrap" style="height:260px">
+      <canvas id="chartHonig" role="img" aria-label="Balkendiagramm Honigertrag 2025 und 2024 je Volk">Volk 4: 30 kg (2025), 28 kg (2024). Volk 5: 30 kg (2025). Volk 6: 30 kg (2025), 25 kg (2024). Volk 7: 10 kg (2025).</canvas>
+    </div>
+    <div class="legend">
+      <span><span class="legend-dot" style="background:#D4820A"></span>2025</span>
+      <span><span class="legend-dot" style="background:#85B7EB"></span>2024</span>
+    </div>
+
+    <div class="summary-box" style="margin-top:1rem">
+      <h4>Ernte-Details und Lerneffekte</h4>
+      <ul>
+        <li><strong>31. Mai – 1. Ernte:</strong> Alle drei Wirtschaftsvölker (4, 5, 6). Bienenflucht mässig → HRe abgekehrt. Je ca. 10 kg.</li>
+        <li><strong>19. Jun – 2. Ernte:</strong> Bienenflucht 3 Tage vorher eingesetzt → sehr wenig Bienen im HR. Je ca. 10 kg. Sonniges Wetter, reger Flugbetrieb.</li>
+        <li><strong>11. Aug – 3. Ernte:</strong> Auch Volk 7 erstmals geerntet. Beide HRe vollständig abgekehrt. Je 10+ kg.</li>
+        <li><strong>Lerneffekt Räuberei:</strong> Abgeräumte HRe mindestens 2 Tage zum Ausschlecken stehen lassen – sonst Räuberei!</li>
+        <li><strong>Vergleich 2024 vs. 2025:</strong> Völker 4 und 6 leicht besser als Vorjahr. Volk 2 durch Schwarm ausgefallen (Vorjahr 13 kg). Volk 5 als Ableger 2024 beeindruckend mit 30 kg im ersten richtigen Jahr.</li>
+      </ul>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  Bienenstand Hochstrasse &nbsp;·&nbsp; Stockkartenauswertung 2025 &nbsp;·&nbsp; Erstellt mit Claude KI (Anthropic)
+</footer>
+
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+const tlData = [
+  {date:'18. Jan', cat:'inspect', dot:'inspect', text:'Alle 8 Völker haben 2-zargig überwintert. Erster Reinigungsflug bei ca. 8–10°C.', volk:'Alle Völker'},
+  {date:'27. Jan', cat:'inspect', dot:'inspect', text:'Erhöhter Flugbetrieb bei Temperaturen über 10°C – Völker aktiv.', volk:'Alle Völker'},
+  {date:'18. Mär', cat:'inspect', dot:'inspect', text:'1. kurze Durchsicht (15°C). V1 sehr aggressiv, V2 stark (10–12.000 Bienen), V4 ruhig – Königin rosa gesehen.', volk:'Volk 1, 2, 4, 5, 6'},
+  {date:'11. Apr', cat:'inspect', dot:'inspect', text:'2. Durchsicht (18°C). V2 stark auf 16–18.000 Bienen angewachsen. Drohnenrahmen in Arbeit. V4: Königin rosa wieder gesehen.', volk:'Volk 1, 2, 4, 5, 6'},
+  {date:'18. Apr', cat:'honey', dot:'honey', text:'Tracht beginnt – Stockwaage zeigt >1 kg Eintrag/Tag. Honigräume aufgesetzt (Halbzargen).', volk:'Volk 4, 5, 6'},
+  {date:'22. Apr', cat:'inspect', dot:'inspect', text:'1. Schwarmkontrolle: V2 und V4 noch keine Schwarmzellen. V5 schwach, HR noch nicht angenommen.', volk:'Alle Völker'},
+  {date:'29. Apr', cat:'inspect', dot:'inspect', text:'2. Schwarmkontrolle: V2 bestiftete SZ gebrochen. V4 verdeckelte SZ – hoher Schwarmtrieb! V6 starker Schwarmtrieb.', volk:'Volk 2, 4, 6'},
+  {date:'02. Mai', cat:'swarm', dot:'swarm', text:'SCHWARMABGANG Volk 2! Schwarm setzt sich an Hecke ab. Gegen 16 Uhr geschöpft. → Neues Volk 7 gegründet.', volk:'Volk 2 → Volk 7'},
+  {date:'03. Mai', cat:'inspect', dot:'inspect', text:'3. Schwarmkontrolle: V1 weisellos (Nachschaffungszellen verdeckelt). V4 hängt durch bis zum Boden – sofortige Maßnahmen. V6 starker Schwarmtrieb mit verdeckelten WZ.', volk:'Volk 1, 4, 5, 6'},
+  {date:'04. Mai', cat:'inspect', dot:'inspect', text:'V4 und V5 umgestellt (Plätze getauscht) – Schwarmtrieb löschen. V6: Zwischenableger gebildet.', volk:'Volk 4, 5, 6'},
+  {date:'10. Mai', cat:'inspect', dot:'inspect', text:'V1 weisellos: NZ-Schlupf ca. 30. April. Honigraum wieder aufgesetzt. V7: 2. Brutraum aufgesetzt.', volk:'Volk 1, 7'},
+  {date:'31. Mai', cat:'honey', dot:'honey', text:'1. Honigernte: ca. 10 kg je Volk. Bienenflucht mässig. HRe abgekehrt und wiederaufgesetzt.', volk:'Volk 4, 5, 6'},
+  {date:'19. Jun', cat:'honey', dot:'honey', text:'2. Honigernte: Bienenflucht 3 Tage vorher → sehr wenige Bienen im HR. Je ca. 10 kg. Sonnig, reger Flugbetrieb.', volk:'Volk 4, 5, 6'},
+  {date:'03. Jul', cat:'queen', dot:'queen', text:'V1: Neue Nachschaffungskönigin in Eilage – angenommen. Volk weiterhin aggressiv.', volk:'Volk 1'},
+  {date:'01. Aug', cat:'feed', dot:'feed', text:'Futterstoss vor Behandlung: je 5 kg API-Invert.', volk:'Alle Völker'},
+  {date:'11. Aug', cat:'honey', dot:'honey', text:'3. Honigernte: beide HRe vollständig abgekehrt. Je ca. 10+ kg. Auch Volk 7 erstmals geerntet (ca. 10 kg).', volk:'Volk 4, 5, 6, 7'},
+  {date:'12. Aug', cat:'inspect', dot:'inspect', text:'HRe abgeräumt, Wabenerneuerung. Frische Windeln eingelegt. Futterstoss ca. 3 kg API-Invert.', volk:'Alle Völker'},
+  {date:'14. Aug', cat:'queen', dot:'queen', text:'Alte Königinnen gekäfigt (Miller-Käfig) – neue RZ-Königinnen (Schramberger) vorbereitet.', volk:'Volk 1, 4, 5, 6, 7'},
+  {date:'16. Aug', cat:'queen', dot:'queen', text:'Neue RZ-Königinnen eingesetzt (Ausfresskäfig). Völker fühlen sich nie weisellos.', volk:'Volk 4, 5, 6, 7'},
+  {date:'17. Aug', cat:'queen', dot:'queen', text:'Käfige geöffnet. V4, V5, V6, V7: keine Aggression – Königinnen werden sanft umlaufen.', volk:'Volk 4, 5, 6, 7'},
+  {date:'10. Aug', cat:'varroa', dot:'varroa', text:'Nassenheider Verdunster eingelegt: 180 ml Ameisensäure 60% bei 18–28°C.', volk:'Alle Völker'},
+  {date:'16. Aug', cat:'varroa', dot:'varroa', text:'Kontrolle: starker Milbenabfall. V4/V5/V6: sehr viele. V1/V2/V7/V9: viele.', volk:'Alle Völker'},
+  {date:'24. Aug', cat:'varroa', dot:'varroa', text:'Spitzentag Milbenabfall: V1: 50+, V2: 100+, V4: 50–100, V5/V6: 100+, V7: 50+.', volk:'Alle Völker'},
+  {date:'26. Aug', cat:'queen', dot:'queen', text:'V1: Neue Königin in Eilage – angenommen! V6: 2. neue Königin eingesetzt (1. gegangen).', volk:'Volk 1, 6'},
+  {date:'19. Aug', cat:'feed', dot:'feed', text:'Futterstoss nach Behandlung: je 5 kg API-Invert.', volk:'Alle Völker'},
+  {date:'04. Sep', cat:'varroa', dot:'varroa', text:'Milbenabfall deutlich abnehmend: V1: 5, V2: 2, V4: 15, V5: 13, V6: 10, V7: 8, V9: 2.', volk:'Alle Völker'},
+  {date:'13. Sep', cat:'feed', dot:'feed', text:'Futterstoss: je 3 kg API-Invert. Völker haben viel Restfutter in Brutwaben.', volk:'Alle Völker'},
+  {date:'25. Okt', cat:'varroa', dot:'varroa', text:'Kontrolle: alle Völker unter 10 Milben/Tag nach 4–5 Wochen. Behandlung erfolgreich abgeschlossen.', volk:'Alle Völker'},
+  {date:'09. Okt', cat:'inspect', dot:'inspect', text:'Futtereimer leer und entfernt. Dämmplatten eingelegt. Vorbereitung auf Einwinterung.', volk:'Alle Völker'},
+  {date:'07. Nov', cat:'varroa', dot:'varroa', text:'Oxalbehandlung (Varrox Eddie): V1 und V6 nahezu brutfrei – idealer Zeitpunkt.', volk:'Volk 1, 6'},
+  {date:'13. Nov', cat:'varroa', dot:'varroa', text:'Schlussbehandlung: Oxalsäureverdampfung (Varrox Eddie) bei allen Völkern.', volk:'Alle Völker'},
+  {date:'15. Nov', cat:'inspect', dot:'inspect', text:'Flugbetrieb und Polleneintrag bei >10°C. Alle Völker stabil eingewintert.', volk:'Alle Völker'},
+];
+
+function renderTl(filter) {
+  const c = document.getElementById('tlContainer');
+  const items = filter === 'all' ? tlData : tlData.filter(d => d.cat === filter);
+  c.innerHTML = items.map((d, i) => `
+    <div class="tl-item">
+      <div class="tl-dot ${d.dot}"></div>
+      ${i < items.length - 1 ? '<div class="tl-line"></div>' : ''}
+      <div class="tl-date">${d.date}</div>
+      <div class="tl-text">${d.text}</div>
+      <div class="tl-volk">${d.volk}</div>
+    </div>`).join('');
+}
+renderTl('all');
+
+function filterTl(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  renderTl(cat);
+}
+
+const gridColor = 'rgba(107,68,35,0.08)';
+const tickColor = '#8A7A62';
+
+new Chart(document.getElementById('chartOverview'), {
+  type: 'bar',
+  data: {
+    labels: ['Volk 1', 'Volk 2', 'Volk 4', 'Volk 5', 'Volk 6', 'Volk 7'],
+    datasets: [
+      {label:'2025', data:[0,0,30,30,30,10], backgroundColor:'#D4820A', borderRadius:4},
+      {label:'2024', data:[25,13,28,0,25,0], backgroundColor:'#85B7EB', borderRadius:4}
+    ]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{grid:{color:gridColor},ticks:{color:tickColor,font:{size:12}}},
+      y:{grid:{color:gridColor},ticks:{color:tickColor,callback:v=>v+' kg'},title:{display:true,text:'Honigertrag (kg)',color:tickColor}}
+    }
+  }
+});
+
+new Chart(document.getElementById('chartVarroa'), {
+  type: 'line',
+  data: {
+    labels: ['01.Aug','10.Aug','16.Aug','23.Aug','24.Aug','04.Sep','14.Sep','25.Okt'],
+    datasets: [
+      {label:'Volk 4',data:[2,null,50,40,75,15,26,5],borderColor:'#D4820A',backgroundColor:'transparent',pointRadius:5,tension:0.3,borderDash:[]},
+      {label:'Volk 1',data:[2,null,35,28,50,5,9,3],borderColor:'#7F77DD',backgroundColor:'transparent',pointRadius:5,tension:0.3,borderDash:[6,3]},
+      {label:'Volk 2',data:[2,null,25,18,100,2,15,2],borderColor:'#2D5A27',backgroundColor:'transparent',pointRadius:5,tension:0.3,borderDash:[2,2]}
+    ]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{grid:{color:gridColor},ticks:{color:tickColor,maxRotation:45,font:{size:11}}},
+      y:{grid:{color:gridColor},ticks:{color:tickColor},title:{display:true,text:'Milben/Tag (Schätzwert)',color:tickColor}}
+    }
+  }
+});
+
+new Chart(document.getElementById('chartHonig'), {
+  type: 'bar',
+  data: {
+    labels: ['Volk 1', 'Volk 2', 'Volk 4', 'Volk 5', 'Volk 6', 'Volk 7'],
+    datasets: [
+      {label:'2025', data:[0,0,30,30,30,10], backgroundColor:'#D4820A', borderRadius:4},
+      {label:'2024', data:[25,13,28,0,25,0], backgroundColor:'#85B7EB', borderRadius:4}
+    ]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{grid:{color:gridColor},ticks:{color:tickColor,font:{size:12}}},
+      y:{grid:{color:gridColor},ticks:{color:tickColor,callback:v=>v+' kg'},max:40,title:{display:true,text:'Honigertrag (kg)',color:tickColor}}
+    }
+  }
+});
+</script>
+</body>
+</html>
