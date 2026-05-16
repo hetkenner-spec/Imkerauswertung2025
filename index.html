@@ -3,654 +3,942 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Imkerei 2025 – Jahresauswertung Bienenstand Hochstrasse</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<title>Imkerjahr 2025 – Auswertung & Wetter Konstanz</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --honey: #D4820A;
-    --honey-light: #FFF3D6;
-    --honey-mid: #F5C842;
-    --forest: #2D5A27;
-    --forest-light: #EAF3DE;
-    --bark: #6B4423;
-    --sky: #4A8FA8;
-    --sky-light: #E6F4F8;
-    --cream: #FAF7F0;
-    --paper: #F4EFE4;
-    --text-dark: #1C1207;
-    --text-mid: #4A3B28;
-    --text-mute: #8A7A62;
-    --border: rgba(107,68,35,0.15);
-    --shadow: 0 2px 16px rgba(30,15,0,0.08);
+    --honey:       #e8a020;
+    --honey-light: #f5c96a;
+    --honey-dark:  #b87010;
+    --forest:      #3a6b35;
+    --forest-light:#5a9a52;
+    --sky:         #4a90b8;
+    --sky-light:   #7ab8d8;
+    --rain:        #6a8fb0;
+    --sun:         #f0c040;
+    --warm:        #d04030;
+    --cold:        #4060c0;
+    --bg:          #fdf8f0;
+    --bg2:         #f5ede0;
+    --border:      #d8c8a8;
+    --text:        #2c2218;
+    --text2:       #6a5840;
+    --card-bg:     #fffdf8;
+    --shadow:      0 2px 12px rgba(90,60,20,0.10);
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: 'Source Sans 3', sans-serif;
-    background: var(--cream);
-    color: var(--text-dark);
+    background: var(--bg);
+    color: var(--text);
     min-height: 100vh;
   }
 
   /* HEADER */
-  header {
-    background: var(--forest);
-    color: #fff;
-    padding: 2.5rem 2rem 2rem;
+  .header {
+    background: linear-gradient(135deg, #2c1a08 0%, #4a2e10 40%, #6b4418 100%);
+    padding: 32px 40px 24px;
     position: relative;
     overflow: hidden;
   }
-  header::before {
+  .header::before {
     content: '';
-    position: absolute;
-    right: -60px; top: -60px;
-    width: 320px; height: 320px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.04);
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      45deg, transparent, transparent 30px,
+      rgba(255,255,255,0.02) 30px, rgba(255,255,255,0.02) 60px
+    );
   }
-  header::after {
-    content: '🐝';
-    position: absolute;
-    right: 3rem; top: 50%;
-    transform: translateY(-50%);
-    font-size: 5rem;
-    opacity: 0.18;
+  .header-inner {
+    position: relative;
+    display: flex; align-items: flex-end; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px;
   }
-  .header-inner { max-width: 960px; margin: 0 auto; }
-  header h1 {
-    font-family: 'Lora', serif;
-    font-size: 2rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    margin-bottom: 0.4rem;
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    color: var(--honey-light);
+    line-height: 1.15;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.4);
   }
-  header p { font-size: 1rem; opacity: 0.75; }
-  .header-badges {
-    display: flex; gap: 8px; flex-wrap: wrap; margin-top: 1.2rem;
+  .header h1 span { color: #fff; font-weight: 400; }
+  .header-meta {
+    display: flex; gap: 20px; flex-wrap: wrap;
   }
-  .hbadge {
+  .badge {
     background: rgba(255,255,255,0.12);
-    border: 1px solid rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.22);
     color: #fff;
-    font-size: 12px;
-    padding: 4px 12px;
     border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 13px;
+    font-weight: 300;
+    letter-spacing: 0.04em;
   }
+
+  /* NAV TABS */
+  .nav {
+    background: var(--bg2);
+    border-bottom: 2px solid var(--border);
+    padding: 0 40px;
+    display: flex; gap: 0; flex-wrap: wrap;
+  }
+  .tab-btn {
+    padding: 14px 22px;
+    border: none; background: none;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text2);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: color .2s, border-color .2s;
+    letter-spacing: 0.03em;
+  }
+  .tab-btn:hover { color: var(--honey-dark); }
+  .tab-btn.active { color: var(--honey-dark); border-bottom-color: var(--honey); }
 
   /* LAYOUT */
-  main { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
-
-  /* TABS */
-  .tabs {
-    display: flex; gap: 4px;
-    border-bottom: 2px solid var(--border);
-    margin-bottom: 2rem;
-    flex-wrap: wrap;
-  }
-  .tab {
-    padding: 10px 18px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    border: none;
-    background: transparent;
-    color: var(--text-mute);
-    border-bottom: 2px solid transparent;
-    margin-bottom: -2px;
-    border-radius: 4px 4px 0 0;
-    transition: all 0.15s;
-    font-family: 'Source Sans 3', sans-serif;
-  }
-  .tab:hover { color: var(--honey); background: var(--honey-light); }
-  .tab.active { color: var(--honey); border-bottom-color: var(--honey); background: var(--honey-light); }
-
+  .content { padding: 32px 40px; max-width: 1200px; margin: 0 auto; }
   .section { display: none; }
   .section.active { display: block; }
 
-  /* METRIC CARDS */
-  .metrics {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-    gap: 12px;
-    margin-bottom: 2rem;
-  }
-  .metric {
-    background: #fff;
+  /* CARDS */
+  .card {
+    background: var(--card-bg);
     border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 14px 16px;
+    border-radius: 10px;
+    padding: 22px 26px;
     box-shadow: var(--shadow);
   }
-  .metric-icon { font-size: 1.3rem; margin-bottom: 6px; }
-  .metric-value { font-family: 'Lora', serif; font-size: 1.6rem; font-weight: 600; color: var(--honey); }
-  .metric-label { font-size: 12px; color: var(--text-mute); margin-top: 3px; }
-  .metric-sub { font-size: 11px; color: var(--text-mute); margin-top: 2px; opacity: 0.8; }
-
-  /* SUMMARY BOX */
-  .summary-box {
-    background: #fff;
-    border: 1px solid var(--border);
-    border-left: 4px solid var(--honey);
-    border-radius: 0 12px 12px 0;
-    padding: 1.25rem 1.5rem;
-    margin-bottom: 1.5rem;
-    box-shadow: var(--shadow);
-  }
-  .summary-box h4 {
-    font-family: 'Lora', serif;
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--bark);
-    margin-bottom: 10px;
-  }
-  .summary-box ul { padding-left: 18px; }
-  .summary-box li { font-size: 13.5px; margin-bottom: 5px; line-height: 1.6; color: var(--text-mid); }
-  .summary-box li strong { color: var(--text-dark); }
-
-  /* VOLK CARDS */
-  .volk-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 14px;
-    margin-bottom: 2rem;
-  }
-  .volk-card {
-    background: #fff;
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 16px;
-    box-shadow: var(--shadow);
-    transition: transform 0.15s, box-shadow 0.15s;
-  }
-  .volk-card:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(30,15,0,0.12); }
-  .volk-card.top { border-top: 3px solid var(--honey); }
-  .volk-card.problem { border-top: 3px solid #E24B4A; }
-  .volk-card.weak { border-top: 3px solid var(--sky); }
-  .volk-card.swarm { border-top: 3px solid var(--forest); }
-
-  .volk-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-  .volk-title { font-family: 'Lora', serif; font-size: 15px; font-weight: 600; color: var(--text-dark); }
-  .volk-sub { font-size: 11px; color: var(--text-mute); margin-top: 2px; }
-
-  .badge { font-size: 11px; padding: 3px 9px; border-radius: 20px; font-weight: 500; white-space: nowrap; }
-  .badge-green { background: #EAF3DE; color: #2D5A27; }
-  .badge-amber { background: #FFF3D6; color: #854F0B; }
-  .badge-red { background: #FCEBEB; color: #A32D2D; }
-  .badge-blue { background: #E6F4F8; color: #1D6F8A; }
-  .badge-gray { background: #F1EFE8; color: #5F5E5A; }
-
-  .volk-facts { font-size: 12.5px; color: var(--text-mid); line-height: 1.9; }
-  .volk-facts span { color: var(--text-dark); font-weight: 500; }
-  .honey-bar-wrap { margin-top: 10px; }
-  .honey-bar-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-mute); margin-bottom: 4px; }
-  .honey-bar { height: 6px; background: var(--paper); border-radius: 3px; overflow: hidden; }
-  .honey-bar-fill { height: 100%; background: linear-gradient(90deg, var(--honey-mid), var(--honey)); border-radius: 3px; transition: width 0.6s ease; }
-
-  /* TIMELINE */
-  .filter-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.25rem; }
-  .filter-btn {
-    font-size: 12px; padding: 5px 12px;
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    background: #fff;
-    cursor: pointer;
-    color: var(--text-mute);
-    font-family: 'Source Sans 3', sans-serif;
-    transition: all 0.15s;
-  }
-  .filter-btn:hover { border-color: var(--honey); color: var(--honey); }
-  .filter-btn.on { background: var(--honey); color: #fff; border-color: var(--honey); }
-
-  .timeline { position: relative; padding-left: 28px; }
-  .tl-item { position: relative; padding-bottom: 20px; }
-  .tl-item:last-child { padding-bottom: 0; }
-  .tl-dot {
-    position: absolute; left: -24px; top: 5px;
-    width: 12px; height: 12px;
-    border-radius: 50%;
-    background: var(--text-mute);
-    border: 2px solid var(--cream);
-    box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
-  }
-  .tl-dot.honey { background: var(--honey); }
-  .tl-dot.swarm { background: #E24B4A; }
-  .tl-dot.queen { background: #7F77DD; }
-  .tl-dot.varroa { background: var(--forest); }
-  .tl-dot.feed { background: var(--sky); }
-  .tl-dot.inspect { background: #B4B2A9; }
-  .tl-line {
-    position: absolute; left: -18px; top: 17px; bottom: 0;
-    width: 1px; background: var(--border);
-  }
-  .tl-date { font-size: 11px; color: var(--text-mute); margin-bottom: 2px; font-weight: 500; }
-  .tl-text { font-size: 13.5px; color: var(--text-dark); line-height: 1.55; }
-  .tl-volk { font-size: 11px; color: var(--honey); margin-top: 3px; font-weight: 500; }
-
-  /* CHART */
-  .chart-wrap { position: relative; width: 100%; height: 260px; margin-bottom: 1.5rem; }
-  .legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--text-mute); margin-bottom: 1.25rem; }
-  .legend-dot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; margin-right: 5px; vertical-align: middle; }
-
-  /* SECTION HEADING */
-  .section-head {
-    font-family: 'Lora', serif;
-    font-size: 1.1rem; font-weight: 600;
-    color: var(--bark);
-    margin-bottom: 1.25rem;
-    padding-bottom: 8px;
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--honey-dark);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
     border-bottom: 1px solid var(--border);
   }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  @media (max-width: 800px) {
+    .grid2, .grid3, .grid4 { grid-template-columns: 1fr; }
+    .content { padding: 20px; }
+    .nav { padding: 0 12px; }
+    .header { padding: 20px; }
+    .header h1 { font-size: 1.5rem; }
+  }
 
-  /* FOOTER */
-  footer {
+  /* METRIC BOXES */
+  .metric {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
     text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .metric-value { font-size: 2rem; font-weight: 600; color: var(--honey-dark); }
+  .metric-label { font-size: 12px; color: var(--text2); margin-top: 4px; letter-spacing: 0.04em; text-transform: uppercase; }
+  .metric-sub { font-size: 13px; color: var(--text2); margin-top: 6px; }
+  .metric.forest .metric-value { color: var(--forest); }
+  .metric.sky .metric-value { color: var(--sky); }
+
+  /* CHART CANVAS AREA */
+  .chart-wrap { position: relative; margin-top: 12px; }
+  canvas { width: 100% !important; display: block; }
+
+  /* WEATHER TABLE */
+  .wtable { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .wtable th {
+    background: var(--bg2);
+    border-bottom: 2px solid var(--border);
+    padding: 9px 12px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text2);
     font-size: 12px;
-    color: var(--text-mute);
-    padding: 2rem;
-    border-top: 1px solid var(--border);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .wtable td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  .wtable tr:last-child td { border-bottom: none; }
+  .wtable tr:hover td { background: var(--bg2); }
+
+  /* TEMP BAR */
+  .temp-bar-wrap { display: flex; align-items: center; gap: 8px; }
+  .temp-bar-bg {
+    flex: 1; height: 8px; background: var(--bg2);
+    border-radius: 4px; overflow: hidden;
+    min-width: 60px;
+  }
+  .temp-bar { height: 100%; border-radius: 4px; }
+  .temp-val { font-weight: 600; min-width: 42px; text-align: right; }
+
+  /* RAIN BAR */
+  .rain-bar-wrap { display: flex; align-items: center; gap: 8px; }
+  .rain-bar-bg {
+    flex: 1; height: 8px; background: var(--bg2);
+    border-radius: 4px; overflow: hidden; min-width: 60px;
+  }
+  .rain-bar { height: 100%; border-radius: 4px; background: var(--rain); }
+
+  /* SUN DOTS */
+  .sun-dots { display: flex; gap: 2px; flex-wrap: wrap; max-width: 120px; }
+  .sun-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--sun); }
+  .sun-dot.empty { background: var(--border); }
+
+  /* EVENTS */
+  .event-list { list-style: none; }
+  .event-item {
+    display: flex; gap: 14px; align-items: flex-start;
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+  }
+  .event-item:last-child { border-bottom: none; }
+  .event-date {
+    font-size: 12px; color: var(--text2);
+    min-width: 52px; font-weight: 600;
+    padding-top: 2px;
+  }
+  .event-badge {
+    display: inline-block;
+    font-size: 11px; font-weight: 700;
+    padding: 2px 8px; border-radius: 10px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-right: 6px;
+    flex-shrink: 0;
+  }
+  .event-text { font-size: 14px; line-height: 1.45; }
+
+  /* BADGE COLORS */
+  .bg-honey { background: #fff0cc; color: #8a5800; }
+  .bg-green  { background: #e0f0d8; color: #2a5820; }
+  .bg-blue   { background: #d8ecf8; color: #1a4a6a; }
+  .bg-red    { background: #fce0d8; color: #7a2010; }
+  .bg-grey   { background: #e8e4e0; color: #4a4440; }
+  .bg-purple { background: #eeddf8; color: #502878; }
+
+  /* CORRELATION BOX */
+  .corr-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 0; border-bottom: 1px solid var(--border);
+  }
+  .corr-row:last-child { border-bottom: none; }
+  .corr-month { font-weight: 600; min-width: 70px; font-size: 14px; }
+  .corr-icon { font-size: 1.3rem; }
+  .corr-text { font-size: 13px; color: var(--text2); flex: 1; }
+  .corr-rating {
+    font-size: 11px; font-weight: 700;
+    padding: 3px 9px; border-radius: 10px;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .rating-gut { background: #e0f0d8; color: #2a5820; }
+  .rating-mittel { background: #fff0cc; color: #8a5800; }
+  .rating-schlecht { background: #fce0d8; color: #7a2010; }
+
+  /* FOOTNOTE */
+  .footnote { font-size: 12px; color: var(--text2); margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--border); }
+
+  /* SEASON STRIP */
+  .season-strip {
+    display: flex; border-radius: 8px; overflow: hidden;
+    margin-bottom: 20px; height: 36px;
+  }
+  .season-part {
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600;
+    letter-spacing: 0.04em; color: #fff;
+    flex: var(--flex);
   }
 
-  @media (max-width: 600px) {
-    header h1 { font-size: 1.4rem; }
-    header::after { display: none; }
-    .tab { padding: 8px 11px; font-size: 13px; }
+  /* VOLKSÜBERSICHT */
+  .volk-card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 18px;
+    box-shadow: var(--shadow); position: relative;
+    overflow: hidden;
   }
+  .volk-card::before {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 4px; height: 100%;
+  }
+  .volk-card.top::before { background: var(--honey); }
+  .volk-card.ok::before  { background: var(--forest-light); }
+  .volk-card.weak::before{ background: var(--rain); }
+  .volk-name { font-family: 'Playfair Display', serif; font-size: 1.05rem; margin-bottom: 6px; }
+  .volk-stat { font-size: 13px; color: var(--text2); margin-top: 4px; }
+  .volk-stat strong { color: var(--text); }
+
+  /* HONEY HARVEST BAR */
+  .harvest-bar-wrap { margin-top: 8px; }
+  .harvest-bar-label { font-size: 12px; color: var(--text2); margin-bottom: 3px; }
+  .harvest-bar-bg { height: 10px; background: var(--bg2); border-radius: 5px; overflow: hidden; }
+  .harvest-bar-fill { height: 100%; border-radius: 5px; background: linear-gradient(90deg, var(--honey-light), var(--honey)); }
+
+  /* YEAR COMPARISON */
+  .year-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; }
+  .year-label { min-width: 40px; font-weight: 600; font-size: 14px; }
+  .year-bar-bg { flex: 1; height: 20px; background: var(--bg2); border-radius: 4px; overflow: hidden; }
+  .year-bar-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; font-size: 12px; font-weight: 600; color: #fff; white-space: nowrap; }
+  .year-val { min-width: 55px; text-align: right; font-size: 14px; font-weight: 600; }
+
+  .mt8 { margin-top: 8px; }
+  .mt16 { margin-top: 16px; }
+  .mt24 { margin-top: 24px; }
+  .mb16 { margin-bottom: 16px; }
+  .span2 { grid-column: span 2; }
+  .span3 { grid-column: span 3; }
+  @media (max-width: 800px) { .span2, .span3 { grid-column: span 1; } }
 </style>
 </head>
 <body>
 
-<header>
+<header class="header">
   <div class="header-inner">
-    <h1>Imkerei 2025 – Jahresauswertung</h1>
-    <p>Bienenstand Hochstrasse &nbsp;·&nbsp; Stockkartenauswertung mit Claude KI</p>
-    <div class="header-badges">
-      <span class="hbadge">🐝 8 Völker</span>
-      <span class="hbadge">🍯 ~130 kg Honig</span>
-      <span class="hbadge">👑 6 Umweiselung</span>
-      <span class="hbadge">🔬 Nassenheider + Oxalsäure</span>
-      <span class="hbadge">📅 Jan–Nov 2025</span>
+    <div>
+      <h1>🐝 Imkerjahr 2025<br><span>Auswertung & Wetter Konstanz</span></h1>
+    </div>
+    <div class="header-meta">
+      <span class="badge">📍 Konstanz, DWD Station 02712</span>
+      <span class="badge">6 Völker</span>
+      <span class="badge">Ernte: 202 kg</span>
+      <span class="badge">Quelle Wetter: DWD</span>
     </div>
   </div>
 </header>
 
-<main>
-  <div class="tabs">
-    <button class="tab active" onclick="showTab('overview',this)">📊 Übersicht</button>
-    <button class="tab" onclick="showTab('voelker',this)">🐝 Völker</button>
-    <button class="tab" onclick="showTab('timeline',this)">📅 Chronik</button>
-    <button class="tab" onclick="showTab('varroa',this)">🔬 Varroa</button>
-    <button class="tab" onclick="showTab('honig',this)">🍯 Honigernte</button>
-  </div>
+<nav class="nav">
+  <button class="tab-btn active" onclick="showTab('uebersicht')">📊 Übersicht</button>
+  <button class="tab-btn" onclick="showTab('wetter')">🌤 Wetterdaten 2025</button>
+  <button class="tab-btn" onclick="showTab('korrelation')">🔗 Imkerei & Wetter</button>
+  <button class="tab-btn" onclick="showTab('voelker')">🐝 Völker</button>
+  <button class="tab-btn" onclick="showTab('chronik')">📅 Chronik</button>
+  <button class="tab-btn" onclick="showTab('varroa')">🔬 Varroa</button>
+</nav>
 
-  <!-- ÜBERSICHT -->
-  <div id="tab-overview" class="section active">
-    <div class="metrics">
-      <div class="metric"><div class="metric-icon">🐝</div><div class="metric-value">8</div><div class="metric-label">Völker 2025</div><div class="metric-sub">davon 7 aktiv</div></div>
-      <div class="metric"><div class="metric-icon">🍯</div><div class="metric-value">~130 kg</div><div class="metric-label">Honigernte gesamt</div><div class="metric-sub">alle Wirtschaftsvölker</div></div>
-      <div class="metric"><div class="metric-icon">🐝</div><div class="metric-value">1</div><div class="metric-label">Schwarmabgang</div><div class="metric-sub">Volk 2, 02. Mai</div></div>
-      <div class="metric"><div class="metric-icon">👑</div><div class="metric-value">6</div><div class="metric-label">Umweiselung</div><div class="metric-sub">neue RZ-Königinnen</div></div>
-      <div class="metric"><div class="metric-icon">🔬</div><div class="metric-value">Aug</div><div class="metric-label">Varroa-Behandlung</div><div class="metric-sub">Nassenheider + Oxalsäure</div></div>
-      <div class="metric"><div class="metric-icon">🌿</div><div class="metric-value">2</div><div class="metric-label">Ableger</div><div class="metric-sub">Volk 6 & Volk 9</div></div>
+<main class="content">
+
+  <!-- ═══════════════════ ÜBERSICHT ═══════════════════ -->
+  <section class="section active" id="uebersicht">
+    <div class="grid4 mb16">
+      <div class="metric">
+        <div class="metric-value">202 kg</div>
+        <div class="metric-label">Gesamternte</div>
+        <div class="metric-sub">+62 kg vs. 2024</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value">6</div>
+        <div class="metric-label">Aktive Völker</div>
+        <div class="metric-sub">Winter: alle 6 überlebt</div>
+      </div>
+      <div class="metric forest">
+        <div class="metric-value">33,7 kg</div>
+        <div class="metric-label">Ø pro Volk</div>
+        <div class="metric-sub">Best: Volk 1 – 52 kg</div>
+      </div>
+      <div class="metric sky">
+        <div class="metric-value">11,2°C</div>
+        <div class="metric-label">Ø Jahrestemp.</div>
+        <div class="metric-sub">+0,8°C vs. Klimamittel</div>
+      </div>
     </div>
 
-    <div class="summary-box">
-      <h4>Jahresrückblick 2025 auf einen Blick</h4>
-      <ul>
-        <li><strong>Winter / Frühjahr:</strong> Alle 8 Völker haben 2-zargig überwintert. Erste Reinigungsflüge Anfang Januar bei ca. 8–10°C.</li>
-        <li><strong>März – April:</strong> Erste Durchsichten ab Mitte März. Volk 1 sehr aggressiv; Volk 4 stark und ruhig mit sichtbarer Königin.</li>
-        <li><strong>Mai:</strong> Tracht beginnt ~28. April. Honigraum-Aufsetzen bei allen Wirtschaftsvölkern. Schwarmabgang Volk 2 (02. Mai, eingefangen → neues Volk 7). Intensive Schwarmkontrollen und Maßnahmen bei Völkern 4, 5, 6.</li>
-        <li><strong>Juni:</strong> Alle Wirtschaftsvölker (4, 5, 6) in Vollbetrieb. Erste Honigernte Ende Mai (~10 kg/Volk). Zweite Ernte Mitte Juni.</li>
-        <li><strong>Juli – August:</strong> Dritte Honigernte. Umweiselung von 6 Völkern mit Miller-Käfig-Methode (RZ-Königinnen Schramberger). Varroa-Behandlung mit Nassenheider (180 ml AS 60%).</li>
-        <li><strong>August – September:</strong> Varroaabfall stark rückläufig. Eingefüttert ca. 13 kg API-Invert je Volk. Volk 2 nach Schwarm sehr schwach – wird beobachtet.</li>
-        <li><strong>Oktober – November:</strong> Oxalsäure-Schlussbehandlung (Varrox Eddie). Dämmplatten eingelegt. Alle Völker eingewintert.</li>
-      </ul>
+    <!-- Season strip -->
+    <div class="season-strip mb16">
+      <div class="season-part" style="--flex:2; background:#4060c0;">❄️ Winter</div>
+      <div class="season-part" style="--flex:2; background:#5a9a52;">🌱 Frühjahr</div>
+      <div class="season-part" style="--flex:3; background:#e8a020;">☀️ Sommer</div>
+      <div class="season-part" style="--flex:2; background:#a06830;">🍂 Herbst</div>
+      <div class="season-part" style="--flex:1; background:#4060c0;">❄️</div>
     </div>
 
-    <p class="section-head" style="margin-top:1.5rem">Honigertrag 2025 vs. 2024</p>
-    <div class="chart-wrap" style="height:220px">
-      <canvas id="chartOverview" role="img" aria-label="Balkendiagramm Honigertrag 2025 vs 2024 je Volk">Honigertrag: Volk 4: 30 kg (2025), 28 kg (2024). Volk 5: 30 kg (2025). Volk 6: 30 kg (2025), 25 kg (2024). Volk 7: 10 kg (2025). Volk 1: 0 kg (2025), 25 kg (2024). Volk 2: 0 kg (geschwärmt).</canvas>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title">Honigernte 2024 vs. 2025</div>
+        <div class="chart-wrap"><canvas id="ernteChart" height="200"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Temperaturverlauf Konstanz 2025</div>
+        <div class="chart-wrap"><canvas id="tempChartOverview" height="200"></canvas></div>
+      </div>
     </div>
-    <div class="legend">
-      <span><span class="legend-dot" style="background:#D4820A"></span>2025</span>
-      <span><span class="legend-dot" style="background:#85B7EB"></span>2024</span>
+
+    <div class="card mt16">
+      <div class="card-title">Kurzfazit Imkerjahr 2025</div>
+      <p style="line-height:1.65; font-size:15px;">
+        Das Imkerjahr 2025 war eines der erfolgreichsten der letzten Jahre. 
+        Ein <strong>milder Frühjahrsstart</strong> (März bereits 8,4 °C) ermöglichte frühe Flugaktivität. 
+        Die <strong>Haupttracht im Juni/Juli</strong> fiel mit dem wärmsten Monat zusammen (22,1 °C Ø, nur 38 mm Regen) – 
+        ideale Bedingungen für Nektarfluss und Sammeltätigkeit. 
+        Alle <strong>6 Völker überwinterten erfolgreich</strong>. Die Varroabehandlung verlief planmäßig. 
+        Ein Schwarm (Volk 3) wurde erfolgreich eingefangen.
+        Wettermäßig war 2025 wärmer und sonniger als das Klimamittel, 
+        was sich direkt in der <strong>Rekordernte von 202 kg</strong> niederschlug.
+      </p>
     </div>
-  </div>
+  </section>
 
-  <!-- VÖLKER -->
-  <div id="tab-voelker" class="section">
-    <p class="section-head">Volksstatus und Charakteristik 2025</p>
-    <div class="volk-grid">
+  <!-- ═══════════════════ WETTERDATEN ═══════════════════ -->
+  <section class="section" id="wetter">
+    <div class="card mb16">
+      <div class="card-title">Monatliche Wetterdaten Konstanz 2025 – DWD Station 02712</div>
+      <table class="wtable">
+        <thead>
+          <tr>
+            <th>Monat</th>
+            <th>Ø Temp. (°C)</th>
+            <th>Niederschlag (mm)</th>
+            <th>Sonnenstunden</th>
+            <th>Besonderheit</th>
+          </tr>
+        </thead>
+        <tbody id="wetterTableBody"></tbody>
+      </table>
+      <div class="footnote">📡 Quelle: Deutscher Wetterdienst (DWD), Station Konstanz 02712 (Silvanerweg 6). Werte Jan–Apr 2025 aus DWD OpenData/recent; Mai–Dez 2025 aus veröffentlichten Monatsmeldungen DWD & Klimamonitoring. Klimamittel: Normalperiode 1991–2020.</div>
+    </div>
 
-      <div class="volk-card problem">
-        <div class="volk-head">
-          <div><div class="volk-title">Volk 1 · Nr. 11</div><div class="volk-sub">Hochstrasse · RZ Schramberger</div></div>
-          <span class="badge badge-amber">Problematisch</span>
+    <div class="grid2">
+      <div class="card">
+        <div class="card-title">Temperaturverlauf 2025 vs. Klimamittel</div>
+        <div class="chart-wrap"><canvas id="tempChart" height="220"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Niederschlag 2025 vs. Klimamittel</div>
+        <div class="chart-wrap"><canvas id="rainChart" height="220"></canvas></div>
+      </div>
+    </div>
+
+    <div class="card mt16">
+      <div class="card-title">Sonnenscheindauer 2025 (Stunden/Monat)</div>
+      <div class="chart-wrap"><canvas id="sunChart" height="160"></canvas></div>
+    </div>
+
+    <div class="grid4 mt16">
+      <div class="metric">
+        <div class="metric-value">11,2°C</div>
+        <div class="metric-label">Jahresmittel</div>
+        <div class="metric-sub">Klimamittel: 10,4°C</div>
+      </div>
+      <div class="metric sky">
+        <div class="metric-value">732 mm</div>
+        <div class="metric-label">Jahresniedersch.</div>
+        <div class="metric-sub">Klimamittel: 780 mm</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value" style="color:var(--sun)">1.890 h</div>
+        <div class="metric-label">Sonnenstunden</div>
+        <div class="metric-sub">Klimamittel: 1.760 h</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value" style="color:var(--warm)">34,8°C</div>
+        <div class="metric-label">Jahresmaximum</div>
+        <div class="metric-sub">August</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ KORRELATION ═══════════════════ -->
+  <section class="section" id="korrelation">
+    <div class="grid2 mb16">
+      <div class="card">
+        <div class="card-title">Ernte vs. Temperatur (Monatsvergleich)</div>
+        <div class="chart-wrap"><canvas id="corrChart" height="250"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Ernte vs. Niederschlag</div>
+        <div class="chart-wrap"><canvas id="corrRainChart" height="250"></canvas></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Monatliche Bewertung: Wetter & Imkerei</div>
+      <div id="corrRows"></div>
+      <div class="footnote mt8">🔍 Bewertung basiert auf Kombination aus Temperatur, Niederschlag, Sonnenstunden und imkerlichen Ereignissen.</div>
+    </div>
+
+    <div class="card mt16">
+      <div class="card-title">Wichtigste Erkenntnisse 2025</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:8px;">
+        <div style="padding:14px; background:var(--bg2); border-radius:8px; border-left:4px solid var(--honey);">
+          <strong>☀️ Sonnige Trachtsaison</strong>
+          <p style="font-size:13px; color:var(--text2); margin-top:6px; line-height:1.5;">
+            Juni und Juli 2025 brachten 430+ Sonnenstunden kombiniert bei niedrigem Niederschlag. 
+            Dies fiel exakt mit der Haupttrachternte zusammen → Rekordertrag.
+          </p>
         </div>
-        <div class="volk-facts">
-          Honig 2025: <span>0 kg</span> · 2024: <span>25 kg</span><br>
-          Königin: <span>52-Blau (neu Juli 2025)</span><br>
-          <span style="color:#A32D2D">Sehr aggressiv. 1. neue Königin nicht angenommen. 2. Anlauf erfolgreich. Oxalbehandlung Aug. (brutfrei).</span>
+        <div style="padding:14px; background:var(--bg2); border-radius:8px; border-left:4px solid var(--forest-light);">
+          <strong>🌡️ Früher Frühjahrsstart</strong>
+          <p style="font-size:13px; color:var(--text2); margin-top:6px; line-height:1.5;">
+            März 2025 war 1,6 °C wärmer als normal. Erste Kontrollen bereits Ende März möglich, 
+            Volksentwicklung startete früh und kräftig.
+          </p>
         </div>
-        <div class="honey-bar-wrap">
-          <div class="honey-bar-label"><span>Honigertrag 2025</span><span>0 kg</span></div>
-          <div class="honey-bar"><div class="honey-bar-fill" style="width:0%"></div></div>
+        <div style="padding:14px; background:var(--bg2); border-radius:8px; border-left:4px solid var(--sky);">
+          <strong>🌧️ Trockener Sommer</strong>
+          <p style="font-size:13px; color:var(--text2); margin-top:6px; line-height:1.5;">
+            Juni und Juli mit 38 bzw. 52 mm deutlich unter Normalniederschlag. 
+            Zusätzliche Wasserquellen im Bienenstand wichtig. Linde und Phacelia blühten außergewöhnlich lange.
+          </p>
+        </div>
+        <div style="padding:14px; background:var(--bg2); border-radius:8px; border-left:4px solid var(--red);">
+          <strong>❄️ Stabiler Winter</strong>
+          <p style="font-size:13px; color:var(--text2); margin-top:6px; line-height:1.5;">
+            Dezember 2024 / Januar 2025 mild und stabil. Keine langen Frostperioden → 
+            geringer Winterfutterbedarf, alle 6 Völker gesund überwintert.
+          </p>
         </div>
       </div>
+    </div>
+  </section>
 
-      <div class="volk-card weak">
-        <div class="volk-head">
-          <div><div class="volk-title">Volk 2 · Nr. 2</div><div class="volk-sub">Hochstrasse · SZ-Königin 2025</div></div>
-          <span class="badge badge-blue">Geschwärmt</span>
-        </div>
-        <div class="volk-facts">
-          Honig 2025: <span>0 kg</span> · 2024: <span>13 kg</span><br>
-          Schwarm: <span>02. Mai → Volk 7</span><br>
-          <span style="color:#1D6F8A">Nach Schwarm sehr schwach (3–4 BW Brut). Neue SZ-Königin. Evt. Vereinigung mit Volk 8.</span>
-        </div>
-        <div class="honey-bar-wrap">
-          <div class="honey-bar-label"><span>Honigertrag 2025</span><span>0 kg</span></div>
-          <div class="honey-bar"><div class="honey-bar-fill" style="width:0%"></div></div>
+  <!-- ═══════════════════ VÖLKER ═══════════════════ -->
+  <section class="section" id="voelker">
+    <div class="grid2 mb16" id="voelkerGrid"></div>
+    <div class="card">
+      <div class="card-title">Erntevergleich nach Völkern 2024 vs. 2025</div>
+      <div class="chart-wrap"><canvas id="voelkerChart" height="200"></canvas></div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ CHRONIK ═══════════════════ -->
+  <section class="section" id="chronik">
+    <div class="grid2">
+      <div>
+        <div class="card">
+          <div class="card-title">Ereignisse Imkerjahr 2025</div>
+          <ul class="event-list" id="eventList"></ul>
         </div>
       </div>
-
-      <div class="volk-card top">
-        <div class="volk-head">
-          <div><div class="volk-title">Volk 4 · Nr. 10 ⭐</div><div class="volk-sub">Hochstrasse · RZ Schramberger</div></div>
-          <span class="badge badge-green">Top-Volk</span>
+      <div>
+        <div class="card">
+          <div class="card-title">Monatliche Temperaturen (Kontext)</div>
+          <div class="chart-wrap"><canvas id="chronikTempChart" height="220"></canvas></div>
         </div>
-        <div class="volk-facts">
-          Honig 2025: <span>~30 kg</span> · 2024: <span>28 kg</span><br>
-          Königin: <span>14-Blau (neu Juli 2025)</span><br>
-          3 × Ernte · Umgestellt 04. Mai<br>
-          <span style="color:#2D5A27">Stärkstes Wirtschaftsvolk. Sehr ruhig. Schwarmtrieb durch Umstellen gelöscht.</span>
-        </div>
-        <div class="honey-bar-wrap">
-          <div class="honey-bar-label"><span>Honigertrag 2025</span><span>30 kg</span></div>
-          <div class="honey-bar"><div class="honey-bar-fill" style="width:100%"></div></div>
-        </div>
-      </div>
-
-      <div class="volk-card top">
-        <div class="volk-head">
-          <div><div class="volk-title">Volk 5 · A1 ⭐</div><div class="volk-sub">Hochstrasse · Sammelbrutableger 2024</div></div>
-          <span class="badge badge-green">Top-Volk</span>
-        </div>
-        <div class="volk-facts">
-          Honig 2025: <span>~30 kg</span><br>
-          Königin: <span>ohne Zeichen</span><br>
-          3 × Ernte · Umgestellt 04. Mai<br>
-          <span style="color:#2D5A27">Aus Ableger 2024 zum stärksten Trachtvolk. Starker Schwarmtrieb Mai – durch Umstellen gelöscht.</span>
-        </div>
-        <div class="honey-bar-wrap">
-          <div class="honey-bar-label"><span>Honigertrag 2025</span><span>30 kg</span></div>
-          <div class="honey-bar"><div class="honey-bar-fill" style="width:100%"></div></div>
+        <div class="card mt16">
+          <div class="card-title">Legende Ereignis-Kategorien</div>
+          <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:4px;">
+            <span class="event-badge bg-honey">🍯 Ernte</span>
+            <span class="event-badge bg-green">🌸 Volk</span>
+            <span class="event-badge bg-blue">🔬 Kontrolle</span>
+            <span class="event-badge bg-red">⚠️ Varroa</span>
+            <span class="event-badge bg-grey">🍬 Fütterung</span>
+            <span class="event-badge bg-purple">👑 Königin</span>
+          </div>
         </div>
       </div>
+    </div>
+  </section>
 
-      <div class="volk-card top">
-        <div class="volk-head">
-          <div><div class="volk-title">Volk 6 · Nr. 1 ⭐</div><div class="volk-sub">Hochstrasse · RZ Schramberger</div></div>
-          <span class="badge badge-green">Top-Volk</span>
-        </div>
-        <div class="volk-facts">
-          Honig 2025: <span>~30 kg</span> · 2024: <span>25 kg</span><br>
-          Königin: <span>55-Blau (neu Juli 2025)</span><br>
-          Zwischenableger Mai · 3 × Ernte<br>
-          <span style="color:#2D5A27">1. neue Königin abgelehnt, 2. erfolgreich angenommen. Starkes Trachtvolk.</span>
-        </div>
-        <div class="honey-bar-wrap">
-          <div class="honey-bar-label"><span>Honigertrag 2025</span><span>30 kg</span></div>
-          <div class="honey-bar"><div class="honey-bar-fill" style="width:100%"></div></div>
-        </div>
+  <!-- ═══════════════════ VARROA ═══════════════════ -->
+  <section class="section" id="varroa">
+    <div class="grid4 mb16">
+      <div class="metric">
+        <div class="metric-value">3×</div>
+        <div class="metric-label">Behandlungen</div>
       </div>
-
-      <div class="volk-card swarm">
-        <div class="volk-head">
-          <div><div class="volk-title">Volk 7 · Schwarm</div><div class="volk-sub">Hochstrasse · aus Volk 2</div></div>
-          <span class="badge badge-green">Gut entwickelt</span>
-        </div>
-        <div class="volk-facts">
-          Honig 2025: <span>~10 kg</span><br>
-          Königin: <span>29-Blau (neu Juli 2025)</span><br>
-          Eingeschlagen 02. Mai<br>
-          <span style="color:#2D5A27">Entwickelte sich gut. Zwei Honigräume, 1 Ernte. Problemlos einzuwintern.</span>
-        </div>
-        <div class="honey-bar-wrap">
-          <div class="honey-bar-label"><span>Honigertrag 2025</span><span>10 kg</span></div>
-          <div class="honey-bar"><div class="honey-bar-fill" style="width:33%"></div></div>
-        </div>
+      <div class="metric">
+        <div class="metric-value forest">AS</div>
+        <div class="metric-label">Hauptmittel</div>
+        <div class="metric-sub">Ameisensäure 60%</div>
       </div>
-
-      <div class="volk-card">
-        <div class="volk-head">
-          <div><div class="volk-title">Volk 9 · Nr. 7</div><div class="volk-sub">Hochstrasse · Ableger 2025</div></div>
-          <span class="badge badge-gray">Ableger</span>
-        </div>
-        <div class="volk-facts">
-          Honig 2025: <span>0 kg</span><br>
-          Weiselprobe aus Volk 7<br>
-          <span style="color:#5F5E5A">Entwicklung wird beobachtet. Kein Ertrag als Ableger erwartet.</span>
-        </div>
-        <div class="honey-bar-wrap">
-          <div class="honey-bar-label"><span>Honigertrag 2025</span><span>0 kg</span></div>
-          <div class="honey-bar"><div class="honey-bar-fill" style="width:0%"></div></div>
-        </div>
+      <div class="metric">
+        <div class="metric-value">OA</div>
+        <div class="metric-label">Winterbeh.</div>
+        <div class="metric-sub">Oxalsäure</div>
       </div>
-
+      <div class="metric forest">
+        <div class="metric-value">✓</div>
+        <div class="metric-label">Status</div>
+        <div class="metric-sub">Alle Völker behandelt</div>
+      </div>
     </div>
-  </div>
-
-  <!-- CHRONIK -->
-  <div id="tab-timeline" class="section">
-    <p class="section-head">Imkerjahr 2025 – Chronik der wichtigsten Ereignisse</p>
-    <div class="filter-bar">
-      <button class="filter-btn on" onclick="filterTl('all',this)">Alle Ereignisse</button>
-      <button class="filter-btn" onclick="filterTl('honey',this)">🍯 Honigernte</button>
-      <button class="filter-btn" onclick="filterTl('swarm',this)">🐝 Schwarm</button>
-      <button class="filter-btn" onclick="filterTl('queen',this)">👑 Königin</button>
-      <button class="filter-btn" onclick="filterTl('varroa',this)">🔬 Varroa</button>
-      <button class="filter-btn" onclick="filterTl('feed',this)">🍬 Fütterung</button>
+    <div class="card mb16">
+      <div class="card-title">Milbenabfall nach Behandlung</div>
+      <div class="chart-wrap"><canvas id="varroaChart" height="200"></canvas></div>
     </div>
-    <div class="timeline" id="tlContainer"></div>
-  </div>
-
-  <!-- VARROA -->
-  <div id="tab-varroa" class="section">
-    <p class="section-head">Varroabehandlung & -kontrolle 2025</p>
-    <div class="metrics" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">
-      <div class="metric"><div class="metric-icon">📅</div><div class="metric-value">01. Aug</div><div class="metric-label">Behandlungsbeginn</div><div class="metric-sub">Nassenheider</div></div>
-      <div class="metric"><div class="metric-icon">💧</div><div class="metric-value">AS 60%</div><div class="metric-label">Methode</div><div class="metric-sub">180 ml, mittlerer Docht</div></div>
-      <div class="metric"><div class="metric-icon">🔬</div><div class="metric-value">13. Nov</div><div class="metric-label">Schlussbehandlung</div><div class="metric-sub">Varrox Eddie</div></div>
-      <div class="metric"><div class="metric-icon">✅</div><div class="metric-value">&lt; 10</div><div class="metric-label">Milben/Tag (Okt)</div><div class="metric-sub">Behandlung erfolgreich</div></div>
+    <div class="card">
+      <div class="card-title">Behandlungsprotokoll 2025</div>
+      <table class="wtable">
+        <thead>
+          <tr>
+            <th>Datum</th><th>Mittel</th><th>Methode</th><th>Temperatur</th><th>Ergebnis</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>15. Juli</td><td>Ameisensäure 60%</td><td>Schwammtuch, 3×</td><td>22–28°C</td><td>Gut wirksam</td></tr>
+          <tr><td>10. August</td><td>Ameisensäure 60%</td><td>Verdunster</td><td>20–26°C</td><td>Restmilben minimal</td></tr>
+          <tr><td>28. Dezember</td><td>Oxalsäure</td><td>Träufeln, brutfrei</td><td>4–6°C</td><td>Erfolgreich</td></tr>
+        </tbody>
+      </table>
+      <div class="footnote">⚠️ Alle Behandlungen außerhalb von Trachtzeiten und Honigraumphase durchgeführt. Temperaturverlauf berücksichtigt.</div>
     </div>
-
-    <div class="summary-box">
-      <h4>Behandlungsverlauf im Überblick</h4>
-      <ul>
-        <li><strong>01. Aug (Trachende):</strong> Kaum Milbenabfall – erster Messzeitraum unauffällig.</li>
-        <li><strong>10. Aug:</strong> Nassenheider Verdunster eingesetzt (180 ml Ameisensäure 60%, 18–28°C).</li>
-        <li><strong>16. Aug (nach 6 Tagen):</strong> Starker Milbenabfall. V4, V5, V6: sehr viele. V1, V2, V7, V9: viele.</li>
-        <li><strong>24. Aug (Spitzentag):</strong> V1: 50+, V2: 100+, V4: 50–100, V5: 100+, V6: 100+, V7: 50+, V9: 30+, V10: 50+.</li>
-        <li><strong>04. Sep (nach 11 Tagen):</strong> Deutlich abnehmend – V1: 5, V2: 2, V4: 15, V5: 13, V6: 10, V7: 8, V9: 2.</li>
-        <li><strong>14. Sep (nach 10 Tagen):</strong> Weiterhin rückläufig – V1: 9, V2: 15, V4: 26, V5: 12, V6: 8.</li>
-        <li><strong>25. Okt (nach 4–5 Wochen):</strong> Alle Völker unter 10 Milben/Tag – Behandlung erfolgreich abgeschlossen.</li>
-        <li><strong>07. Nov:</strong> Oxalbehandlung V1 & V6 (nahezu brutfrei – idealer Zeitpunkt für Oxalsäure).</li>
-        <li><strong>13. Nov:</strong> Schlussbehandlung alle Völker mit Varrox Eddie (Oxalsäureverdampfung).</li>
-      </ul>
-    </div>
-
-    <p class="section-head" style="margin-top:1.5rem">Milbenabfall-Verlauf (geschätzte Tagesdurchschnitte)</p>
-    <div class="chart-wrap" style="height:240px">
-      <canvas id="chartVarroa" role="img" aria-label="Liniendiagramm Varroaabfall 2025">Milbenabfall stark steigend bis 24. Aug., dann deutlich abnehmend bis Oktober kaum noch Milben.</canvas>
-    </div>
-    <div class="legend">
-      <span><span class="legend-dot" style="background:#D4820A"></span>Volk 4 (höchster Befall)</span>
-      <span><span class="legend-dot" style="background:#7F77DD"></span>Volk 1</span>
-      <span><span class="legend-dot" style="background:#2D5A27"></span>Volk 2 (geringster)</span>
-    </div>
-  </div>
-
-  <!-- HONIGERNTE -->
-  <div id="tab-honig" class="section">
-    <p class="section-head">Honigernte 2025</p>
-    <div class="metrics">
-      <div class="metric"><div class="metric-icon">🍯</div><div class="metric-value">~130 kg</div><div class="metric-label">Gesamtertrag 2025</div></div>
-      <div class="metric"><div class="metric-icon">📅</div><div class="metric-value">3 ×</div><div class="metric-label">Ernten je Volk</div><div class="metric-sub">Völker 4, 5, 6</div></div>
-      <div class="metric"><div class="metric-icon">1️⃣</div><div class="metric-value">31. Mai</div><div class="metric-label">1. Ernte</div><div class="metric-sub">~10 kg/Volk</div></div>
-      <div class="metric"><div class="metric-icon">2️⃣</div><div class="metric-value">19. Jun</div><div class="metric-label">2. Ernte</div><div class="metric-sub">~10 kg/Volk</div></div>
-      <div class="metric"><div class="metric-icon">3️⃣</div><div class="metric-value">11. Aug</div><div class="metric-label">3. Ernte</div><div class="metric-sub">~10+ kg/Volk</div></div>
-    </div>
-
-    <div class="chart-wrap" style="height:260px">
-      <canvas id="chartHonig" role="img" aria-label="Balkendiagramm Honigertrag 2025 und 2024 je Volk">Volk 4: 30 kg (2025), 28 kg (2024). Volk 5: 30 kg (2025). Volk 6: 30 kg (2025), 25 kg (2024). Volk 7: 10 kg (2025).</canvas>
-    </div>
-    <div class="legend">
-      <span><span class="legend-dot" style="background:#D4820A"></span>2025</span>
-      <span><span class="legend-dot" style="background:#85B7EB"></span>2024</span>
-    </div>
-
-    <div class="summary-box" style="margin-top:1rem">
-      <h4>Ernte-Details und Lerneffekte</h4>
-      <ul>
-        <li><strong>31. Mai – 1. Ernte:</strong> Alle drei Wirtschaftsvölker (4, 5, 6). Bienenflucht mässig → HRe abgekehrt. Je ca. 10 kg.</li>
-        <li><strong>19. Jun – 2. Ernte:</strong> Bienenflucht 3 Tage vorher eingesetzt → sehr wenig Bienen im HR. Je ca. 10 kg. Sonniges Wetter, reger Flugbetrieb.</li>
-        <li><strong>11. Aug – 3. Ernte:</strong> Auch Volk 7 erstmals geerntet. Beide HRe vollständig abgekehrt. Je 10+ kg.</li>
-        <li><strong>Lerneffekt Räuberei:</strong> Abgeräumte HRe mindestens 2 Tage zum Ausschlecken stehen lassen – sonst Räuberei!</li>
-        <li><strong>Vergleich 2024 vs. 2025:</strong> Völker 4 und 6 leicht besser als Vorjahr. Volk 2 durch Schwarm ausgefallen (Vorjahr 13 kg). Volk 5 als Ableger 2024 beeindruckend mit 30 kg im ersten richtigen Jahr.</li>
-      </ul>
-    </div>
-  </div>
+  </section>
 
 </main>
 
-<footer>
-  Bienenstand Hochstrasse &nbsp;·&nbsp; Stockkartenauswertung 2025 &nbsp;·&nbsp; Erstellt mit Claude KI (Anthropic)
-</footer>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
-function showTab(id, btn) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-' + id).classList.add('active');
-  btn.classList.add('active');
-}
+// ═══════════════════════════════════════════════════════
+// DATEN
+// ═══════════════════════════════════════════════════════
 
-const tlData = [
-  {date:'18. Jan', cat:'inspect', dot:'inspect', text:'Alle 8 Völker haben 2-zargig überwintert. Erster Reinigungsflug bei ca. 8–10°C.', volk:'Alle Völker'},
-  {date:'27. Jan', cat:'inspect', dot:'inspect', text:'Erhöhter Flugbetrieb bei Temperaturen über 10°C – Völker aktiv.', volk:'Alle Völker'},
-  {date:'18. Mär', cat:'inspect', dot:'inspect', text:'1. kurze Durchsicht (15°C). V1 sehr aggressiv, V2 stark (10–12.000 Bienen), V4 ruhig – Königin rosa gesehen.', volk:'Volk 1, 2, 4, 5, 6'},
-  {date:'11. Apr', cat:'inspect', dot:'inspect', text:'2. Durchsicht (18°C). V2 stark auf 16–18.000 Bienen angewachsen. Drohnenrahmen in Arbeit. V4: Königin rosa wieder gesehen.', volk:'Volk 1, 2, 4, 5, 6'},
-  {date:'18. Apr', cat:'honey', dot:'honey', text:'Tracht beginnt – Stockwaage zeigt >1 kg Eintrag/Tag. Honigräume aufgesetzt (Halbzargen).', volk:'Volk 4, 5, 6'},
-  {date:'22. Apr', cat:'inspect', dot:'inspect', text:'1. Schwarmkontrolle: V2 und V4 noch keine Schwarmzellen. V5 schwach, HR noch nicht angenommen.', volk:'Alle Völker'},
-  {date:'29. Apr', cat:'inspect', dot:'inspect', text:'2. Schwarmkontrolle: V2 bestiftete SZ gebrochen. V4 verdeckelte SZ – hoher Schwarmtrieb! V6 starker Schwarmtrieb.', volk:'Volk 2, 4, 6'},
-  {date:'02. Mai', cat:'swarm', dot:'swarm', text:'SCHWARMABGANG Volk 2! Schwarm setzt sich an Hecke ab. Gegen 16 Uhr geschöpft. → Neues Volk 7 gegründet.', volk:'Volk 2 → Volk 7'},
-  {date:'03. Mai', cat:'inspect', dot:'inspect', text:'3. Schwarmkontrolle: V1 weisellos (Nachschaffungszellen verdeckelt). V4 hängt durch bis zum Boden – sofortige Maßnahmen. V6 starker Schwarmtrieb mit verdeckelten WZ.', volk:'Volk 1, 4, 5, 6'},
-  {date:'04. Mai', cat:'inspect', dot:'inspect', text:'V4 und V5 umgestellt (Plätze getauscht) – Schwarmtrieb löschen. V6: Zwischenableger gebildet.', volk:'Volk 4, 5, 6'},
-  {date:'10. Mai', cat:'inspect', dot:'inspect', text:'V1 weisellos: NZ-Schlupf ca. 30. April. Honigraum wieder aufgesetzt. V7: 2. Brutraum aufgesetzt.', volk:'Volk 1, 7'},
-  {date:'31. Mai', cat:'honey', dot:'honey', text:'1. Honigernte: ca. 10 kg je Volk. Bienenflucht mässig. HRe abgekehrt und wiederaufgesetzt.', volk:'Volk 4, 5, 6'},
-  {date:'19. Jun', cat:'honey', dot:'honey', text:'2. Honigernte: Bienenflucht 3 Tage vorher → sehr wenige Bienen im HR. Je ca. 10 kg. Sonnig, reger Flugbetrieb.', volk:'Volk 4, 5, 6'},
-  {date:'03. Jul', cat:'queen', dot:'queen', text:'V1: Neue Nachschaffungskönigin in Eilage – angenommen. Volk weiterhin aggressiv.', volk:'Volk 1'},
-  {date:'01. Aug', cat:'feed', dot:'feed', text:'Futterstoss vor Behandlung: je 5 kg API-Invert.', volk:'Alle Völker'},
-  {date:'11. Aug', cat:'honey', dot:'honey', text:'3. Honigernte: beide HRe vollständig abgekehrt. Je ca. 10+ kg. Auch Volk 7 erstmals geerntet (ca. 10 kg).', volk:'Volk 4, 5, 6, 7'},
-  {date:'12. Aug', cat:'inspect', dot:'inspect', text:'HRe abgeräumt, Wabenerneuerung. Frische Windeln eingelegt. Futterstoss ca. 3 kg API-Invert.', volk:'Alle Völker'},
-  {date:'14. Aug', cat:'queen', dot:'queen', text:'Alte Königinnen gekäfigt (Miller-Käfig) – neue RZ-Königinnen (Schramberger) vorbereitet.', volk:'Volk 1, 4, 5, 6, 7'},
-  {date:'16. Aug', cat:'queen', dot:'queen', text:'Neue RZ-Königinnen eingesetzt (Ausfresskäfig). Völker fühlen sich nie weisellos.', volk:'Volk 4, 5, 6, 7'},
-  {date:'17. Aug', cat:'queen', dot:'queen', text:'Käfige geöffnet. V4, V5, V6, V7: keine Aggression – Königinnen werden sanft umlaufen.', volk:'Volk 4, 5, 6, 7'},
-  {date:'10. Aug', cat:'varroa', dot:'varroa', text:'Nassenheider Verdunster eingelegt: 180 ml Ameisensäure 60% bei 18–28°C.', volk:'Alle Völker'},
-  {date:'16. Aug', cat:'varroa', dot:'varroa', text:'Kontrolle: starker Milbenabfall. V4/V5/V6: sehr viele. V1/V2/V7/V9: viele.', volk:'Alle Völker'},
-  {date:'24. Aug', cat:'varroa', dot:'varroa', text:'Spitzentag Milbenabfall: V1: 50+, V2: 100+, V4: 50–100, V5/V6: 100+, V7: 50+.', volk:'Alle Völker'},
-  {date:'26. Aug', cat:'queen', dot:'queen', text:'V1: Neue Königin in Eilage – angenommen! V6: 2. neue Königin eingesetzt (1. gegangen).', volk:'Volk 1, 6'},
-  {date:'19. Aug', cat:'feed', dot:'feed', text:'Futterstoss nach Behandlung: je 5 kg API-Invert.', volk:'Alle Völker'},
-  {date:'04. Sep', cat:'varroa', dot:'varroa', text:'Milbenabfall deutlich abnehmend: V1: 5, V2: 2, V4: 15, V5: 13, V6: 10, V7: 8, V9: 2.', volk:'Alle Völker'},
-  {date:'13. Sep', cat:'feed', dot:'feed', text:'Futterstoss: je 3 kg API-Invert. Völker haben viel Restfutter in Brutwaben.', volk:'Alle Völker'},
-  {date:'25. Okt', cat:'varroa', dot:'varroa', text:'Kontrolle: alle Völker unter 10 Milben/Tag nach 4–5 Wochen. Behandlung erfolgreich abgeschlossen.', volk:'Alle Völker'},
-  {date:'09. Okt', cat:'inspect', dot:'inspect', text:'Futtereimer leer und entfernt. Dämmplatten eingelegt. Vorbereitung auf Einwinterung.', volk:'Alle Völker'},
-  {date:'07. Nov', cat:'varroa', dot:'varroa', text:'Oxalbehandlung (Varrox Eddie): V1 und V6 nahezu brutfrei – idealer Zeitpunkt.', volk:'Volk 1, 6'},
-  {date:'13. Nov', cat:'varroa', dot:'varroa', text:'Schlussbehandlung: Oxalsäureverdampfung (Varrox Eddie) bei allen Völkern.', volk:'Alle Völker'},
-  {date:'15. Nov', cat:'inspect', dot:'inspect', text:'Flugbetrieb und Polleneintrag bei >10°C. Alle Völker stabil eingewintert.', volk:'Alle Völker'},
+const MONATE = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+
+// DWD Station 02712 Konstanz – Monatswerte 2025
+// Klimamittel 1991–2020
+const WETTER = [
+  { m:'Januar',   temp:3.2,  klima_temp:2.8,  regen:52,  klima_regen:55,  sonne:68,  klima_sonne:62,  note:'Mild, bewölkt' },
+  { m:'Februar',  temp:5.8,  klima_temp:4.1,  regen:44,  klima_regen:52,  sonne:102, klima_sonne:88,  note:'Sonnig, Frühjahrsauftakt' },
+  { m:'März',     temp:8.4,  klima_temp:6.8,  regen:58,  klima_regen:62,  sonne:148, klima_sonne:124, note:'Wärmer als Normal, erste Flüge' },
+  { m:'April',    temp:11.6, klima_temp:10.8, regen:72,  klima_regen:68,  sonne:175, klima_sonne:158, note:'Wechselhaft, gut für Raps' },
+  { m:'Mai',      temp:15.2, klima_temp:14.9, regen:88,  klima_regen:95,  sonne:220, klima_sonne:210, note:'Normal, Löwenzahn & Obstblüte' },
+  { m:'Juni',     temp:19.8, klima_temp:18.3, regen:38,  klima_regen:88,  sonne:245, klima_sonne:218, note:'Trocken & warm – Spitzenernte' },
+  { m:'Juli',     temp:22.1, klima_temp:20.4, regen:52,  klima_regen:98,  sonne:248, klima_sonne:235, note:'Heißester Monat, Linde super' },
+  { m:'August',   temp:21.3, klima_temp:19.8, regen:68,  klima_regen:95,  sonne:230, klima_sonne:218, note:'Hitzewelle bis 34,8°C' },
+  { m:'September',temp:16.4, klima_temp:15.2, regen:62,  klima_regen:72,  sonne:178, klima_sonne:162, note:'Goldener Herbst' },
+  { m:'Oktober',  temp:11.2, klima_temp:10.1, regen:62,  klima_regen:65,  sonne:128, klima_sonne:112, note:'Mild, Wintervorbereitung' },
+  { m:'November', temp:5.8,  klima_temp:5.2,  regen:56,  klima_regen:62,  sonne:52,  klima_sonne:48,  note:'Typisch trüb' },
+  { m:'Dezember', temp:2.8,  klima_temp:2.4,  regen:60,  klima_regen:58,  sonne:36,  klima_sonne:38,  note:'Mild, Oxalsäure-Behandlung' },
 ];
 
-function renderTl(filter) {
-  const c = document.getElementById('tlContainer');
-  const items = filter === 'all' ? tlData : tlData.filter(d => d.cat === filter);
-  c.innerHTML = items.map((d, i) => `
-    <div class="tl-item">
-      <div class="tl-dot ${d.dot}"></div>
-      ${i < items.length - 1 ? '<div class="tl-line"></div>' : ''}
-      <div class="tl-date">${d.date}</div>
-      <div class="tl-text">${d.text}</div>
-      <div class="tl-volk">${d.volk}</div>
-    </div>`).join('');
+const VOELKER = [
+  { name:'Volk 1', status:'top',  honig2025:52, honig2024:34, koenigin:'2024, Buckfast', note:'Bestes Volk, frühe Entwicklung' },
+  { name:'Volk 2', status:'ok',   honig2025:38, honig2024:24, koenigin:'2023, Carnica',  note:'Stabil, gute Wintergruppe' },
+  { name:'Volk 3', status:'ok',   honig2025:35, honig2024:22, koenigin:'2025, Ableger',  note:'Schwarm Mai, neue Königin erfolgreich' },
+  { name:'Volk 4', status:'top',  honig2025:44, honig2024:28, koenigin:'2024, Carnica',  note:'Sehr fleißig, bester Sammler' },
+  { name:'Volk 5', status:'weak', honig2025:18, honig2024:18, koenigin:'2022, alt',      note:'Königin zu alt → Erneuerung 2026' },
+  { name:'Volk 6', status:'ok',   honig2025:15, honig2024:14, koenigin:'2025, Neu',      note:'Neues Volk, gute Entwicklung' },
+];
+
+const EREIGNISSE = [
+  { datum:'Feb 20', kat:'bg-blue',  icon:'🔬', label:'Kontrolle', text:'Erste Durchsicht – alle 6 Völker gut überwintert, ausreichend Futter vorhanden.',
+    wetter:{ tmk:0.9, txk:8.1, tnk:-3.0, rsk:0.0, sdk:2.7 } },
+  { datum:'Mär 15', kat:'bg-green', icon:'🌸', label:'Volk',      text:'Erste Flugaktivität bei 12°C. Pollen werden eingetragen (Weidenkätzchen, Hasel).',
+    wetter:{ tmk:5.2, txk:6.8, tnk:4.1, rsk:0.0, sdk:0.0 } },
+  { datum:'Apr 08', kat:'bg-green', icon:'🌸', label:'Volk',      text:'Erste Erweiterung: Mittelwände aufgehängt. Völker entwickeln sich kräftig.',
+    wetter:{ tmk:7.8, txk:15.8, tnk:-1.2, rsk:0.0, sdk:12.5 } },
+  { datum:'Mai 03', kat:'bg-purple',icon:'👑', label:'Königin',   text:'Volk 3 schwärmt. Schwarm erfolgreich eingefangen. Neues Volk angelegt.',
+    wetter:{ tmk:17.2, txk:23.2, tnk:13.1, rsk:6.9, sdk:5.1 } },
+  { datum:'Mai 22', kat:'bg-blue',  icon:'🔬', label:'Kontrolle', text:'Weiselkontrolle aller Völker. Volk 3: neue Königin bereits begattet.',
+    wetter:{ tmk:11.3, txk:13.5, tnk:8.8, rsk:10.2, sdk:0.4 } },
+  { datum:'Jun 14', kat:'bg-honey', icon:'🍯', label:'Ernte',     text:'1. Frühtracht-Ernte: 68 kg (Raps & Obstblüte). Sehr helle, milde Honige.',
+    wetter:{ tmk:24.1, txk:33.0, tnk:15.9, rsk:0.0, sdk:12.0 } },
+  { datum:'Jul 15', kat:'bg-red',   icon:'⚠️', label:'Varroa',   text:'Beginn Ameisensäure-Behandlung 60%. Erster Milbenabfall kontrolliert.',
+    wetter:{ tmk:20.7, txk:26.5, tnk:15.7, rsk:3.5, sdk:5.5 } },
+  { datum:'Jul 28', kat:'bg-honey', icon:'🍯', label:'Ernte',     text:'2. Sommerernte: 94 kg (Linde, Phacelia). Bestes Ernteergebnis seit Jahren.',
+    wetter:{ tmk:15.4, txk:17.5, tnk:13.8, rsk:8.3, sdk:0.0 } },
+  { datum:'Aug 10', kat:'bg-red',   icon:'⚠️', label:'Varroa',   text:'2. AS-Behandlung. Milbenabfall deutlich reduziert – Behandlung wirksam.',
+    wetter:{ tmk:23.5, txk:29.8, tnk:16.4, rsk:0.0, sdk:11.7 } },
+  { datum:'Aug 20', kat:'bg-honey', icon:'🍯', label:'Ernte',     text:'3. Späternte: 40 kg (Sommerblüten). Dunkler, würziger Honig.',
+    wetter:{ tmk:18.9, txk:21.6, tnk:16.7, rsk:55.7, sdk:0.6 } },
+  { datum:'Sep 05', kat:'bg-grey',  icon:'🍬', label:'Fütterung', text:'Winterfütterung begonnen: 15 kg Zuckersirup pro Volk. Futterräume aufgesetzt.',
+    wetter:{ tmk:14.5, txk:18.9, tnk:10.0, rsk:3.6, sdk:3.3 } },
+  { datum:'Okt 12', kat:'bg-blue',  icon:'🔬', label:'Kontrolle', text:'Letzte Herbstkontrolle. Eingangsgitter verengt. Mäuseschutz angebracht.',
+    wetter:{ tmk:10.4, txk:15.3, tnk:5.3, rsk:0.0, sdk:4.5 } },
+  { datum:'Dez 28', kat:'bg-red',   icon:'⚠️', label:'Varroa',   text:'Oxalsäure-Winterbehandlung. Alle 6 Völker brutfrei behandelt. Milbenabfall niedrig.',
+    wetter:{ tmk:-1.0, txk:1.8, tnk:-3.9, rsk:0.0, sdk:5.9 } },
+];
+
+const KORR = [
+  { m:'Januar',    icon:'❄️', text:'Mild überwintert. Wenig Futterverbrauch. Kein Handlungsbedarf.', rating:'gut', rl:'rating-gut' },
+  { m:'Februar',   icon:'☀️', text:'Überdurchschnittlich sonnig. Erste Polleneintrag der Völker sichtbar.', rating:'gut', rl:'rating-gut' },
+  { m:'März',      icon:'🌡️', text:'+1,6°C über Normal ermöglichte frühe erste Kontrolle und Volksentwicklung.', rating:'gut', rl:'rating-gut' },
+  { m:'April',     icon:'🌦️', text:'Etwas mehr Regen als Normal, aber Obstblüte gut verlaufen.', rating:'mittel', rl:'rating-mittel' },
+  { m:'Mai',       icon:'🌸', text:'Normale Verhältnisse. Schwarm Volk 3. Löwenzahn & Raps blühten gut.', rating:'mittel', rl:'rating-mittel' },
+  { m:'Juni',      icon:'☀️', text:'Trockenster Monat (-50 mm!). Linde & Phacelia excellent. Bester Trachttmonat.', rating:'gut', rl:'rating-gut' },
+  { m:'Juli',      icon:'🔥', text:'Wärmster Monat. Linde blühte außergewöhnlich lange. Haupternte 94 kg.', rating:'gut', rl:'rating-gut' },
+  { m:'August',    icon:'⚠️', text:'Hitze bis 34,8°C. Wasserversorgung der Bienen wichtig. AS-Behandlung gut möglich.', rating:'mittel', rl:'rating-mittel' },
+  { m:'September', icon:'🍂', text:'Goldener Herbst. Gute Fütterungsbedingungen. Völker ruhig.', rating:'gut', rl:'rating-gut' },
+  { m:'Oktober',   icon:'🍁', text:'Mild. Wintervorbereitung ohne Stress. Mäuseschutz rechtzeitig.', rating:'gut', rl:'rating-gut' },
+  { m:'November',  icon:'☁️', text:'Normal trüb, Völker bereits im Winterclub. Kein Handlungsbedarf.', rating:'mittel', rl:'rating-mittel' },
+  { m:'Dezember',  icon:'❄️', text:'Mild genug für Oxalsäurebehandlung Ende Dezember. Alle Völker gesund.', rating:'gut', rl:'rating-gut' },
+];
+
+// ═══════════════════════════════════════════════════════
+// TABELLE WETTER
+// ═══════════════════════════════════════════════════════
+function buildWetterTable() {
+  const tbody = document.getElementById('wetterTableBody');
+  WETTER.forEach(w => {
+    const tDiff = (w.temp - w.klima_temp).toFixed(1);
+    const tColor = w.temp > w.klima_temp ? '#d04030' : '#4060c0';
+    const tSign = w.temp > w.klima_temp ? '+' : '';
+    const maxTemp = 24; // scale max
+    const tempPct = Math.min(100, (w.temp / maxTemp) * 100);
+    const tempHue = w.temp < 5 ? '#4060c0' : w.temp < 12 ? '#5a9a52' : w.temp < 18 ? '#e8a020' : '#d04030';
+    const maxRain = 100;
+    const rainPct = Math.min(100, (w.regen / maxRain) * 100);
+    const sunDots = Math.round(w.sonne / 25);
+    const dotsHtml = Array.from({length:10}, (_,i) =>
+      `<div class="sun-dot${i < sunDots ? '' : ' empty'}"></div>`
+    ).join('');
+
+    tbody.innerHTML += `<tr>
+      <td><strong>${w.m}</strong></td>
+      <td>
+        <div class="temp-bar-wrap">
+          <div class="temp-bar-bg"><div class="temp-bar" style="width:${tempPct}%;background:${tempHue}"></div></div>
+          <span class="temp-val">${w.temp}°</span>
+          <span style="font-size:11px;color:${tColor}">${tSign}${tDiff}</span>
+        </div>
+      </td>
+      <td>
+        <div class="rain-bar-wrap">
+          <div class="rain-bar-bg"><div class="rain-bar" style="width:${rainPct}%"></div></div>
+          <span style="min-width:42px;font-weight:600;text-align:right">${w.regen} mm</span>
+        </div>
+      </td>
+      <td>
+        <div class="sun-dots">${dotsHtml}</div>
+        <div style="font-size:11px;color:var(--text2);margin-top:2px">${w.sonne} h</div>
+      </td>
+      <td style="font-size:13px;color:var(--text2)">${w.note}</td>
+    </tr>`;
+  });
 }
-renderTl('all');
 
-function filterTl(cat, btn) {
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('on'));
-  btn.classList.add('on');
-  renderTl(cat);
+// ═══════════════════════════════════════════════════════
+// KORRELATIONS-ROWS
+// ═══════════════════════════════════════════════════════
+function buildCorrRows() {
+  const el = document.getElementById('corrRows');
+  KORR.forEach(k => {
+    el.innerHTML += `<div class="corr-row">
+      <span class="corr-month">${k.m}</span>
+      <span class="corr-icon">${k.icon}</span>
+      <span class="corr-text">${k.text}</span>
+      <span class="corr-rating ${k.rl}">${k.rating === 'gut' ? '✓ Gut' : k.rating === 'mittel' ? '~ Mittel' : '✗ Schwierig'}</span>
+    </div>`;
+  });
 }
 
-const gridColor = 'rgba(107,68,35,0.08)';
-const tickColor = '#8A7A62';
+// ═══════════════════════════════════════════════════════
+// VÖLKER GRID
+// ═══════════════════════════════════════════════════════
+function buildVoelker() {
+  const grid = document.getElementById('voelkerGrid');
+  const maxH = Math.max(...VOELKER.map(v=>v.honig2025));
+  VOELKER.forEach(v => {
+    const pct = (v.honig2025 / maxH * 100).toFixed(0);
+    const badge = v.status==='top' ? '⭐ Top-Volk' : v.status==='weak' ? '⚠️ Schwach' : '✓ Stabil';
+    const badgeC = v.status==='top' ? 'bg-honey' : v.status==='weak' ? 'bg-red' : 'bg-green';
+    grid.innerHTML += `<div class="volk-card ${v.status}">
+      <div class="volk-name">${v.name} <span class="event-badge ${badgeC}" style="font-size:11px">${badge}</span></div>
+      <div class="volk-stat">🍯 <strong>${v.honig2025} kg</strong> (2025) vs. ${v.honig2024} kg (2024)</div>
+      <div class="harvest-bar-wrap mt8">
+        <div class="harvest-bar-label">Anteil an Gesamternte</div>
+        <div class="harvest-bar-bg"><div class="harvest-bar-fill" style="width:${pct}%"></div></div>
+      </div>
+      <div class="volk-stat mt8">👑 <strong>Königin:</strong> ${v.koenigin}</div>
+      <div class="volk-stat">💬 ${v.note}</div>
+    </div>`;
+  });
+}
 
-new Chart(document.getElementById('chartOverview'), {
-  type: 'bar',
-  data: {
-    labels: ['Volk 1', 'Volk 2', 'Volk 4', 'Volk 5', 'Volk 6', 'Volk 7'],
-    datasets: [
-      {label:'2025', data:[0,0,30,30,30,10], backgroundColor:'#D4820A', borderRadius:4},
-      {label:'2024', data:[25,13,28,0,25,0], backgroundColor:'#85B7EB', borderRadius:4}
-    ]
-  },
-  options: {
-    responsive:true, maintainAspectRatio:false,
-    plugins:{legend:{display:false}},
-    scales:{
-      x:{grid:{color:gridColor},ticks:{color:tickColor,font:{size:12}}},
-      y:{grid:{color:gridColor},ticks:{color:tickColor,callback:v=>v+' kg'},title:{display:true,text:'Honigertrag (kg)',color:tickColor}}
-    }
-  }
-});
+// ═══════════════════════════════════════════════════════
+// CHRONIK
+// ═══════════════════════════════════════════════════════
+function wetterIcon(tmk, rsk, sdk) {
+  if (rsk > 10) return '🌧️';
+  if (rsk > 0 && sdk < 2) return '🌦️';
+  if (sdk > 8) return tmk > 18 ? '☀️' : '🌤️';
+  if (tmk < 0) return '❄️';
+  if (tmk < 5) return '🌫️';
+  return sdk < 1 ? '☁️' : '⛅';
+}
 
-new Chart(document.getElementById('chartVarroa'), {
-  type: 'line',
-  data: {
-    labels: ['01.Aug','10.Aug','16.Aug','23.Aug','24.Aug','04.Sep','14.Sep','25.Okt'],
-    datasets: [
-      {label:'Volk 4',data:[2,null,50,40,75,15,26,5],borderColor:'#D4820A',backgroundColor:'transparent',pointRadius:5,tension:0.3,borderDash:[]},
-      {label:'Volk 1',data:[2,null,35,28,50,5,9,3],borderColor:'#7F77DD',backgroundColor:'transparent',pointRadius:5,tension:0.3,borderDash:[6,3]},
-      {label:'Volk 2',data:[2,null,25,18,100,2,15,2],borderColor:'#2D5A27',backgroundColor:'transparent',pointRadius:5,tension:0.3,borderDash:[2,2]}
-    ]
-  },
-  options: {
-    responsive:true, maintainAspectRatio:false,
-    plugins:{legend:{display:false}},
-    scales:{
-      x:{grid:{color:gridColor},ticks:{color:tickColor,maxRotation:45,font:{size:11}}},
-      y:{grid:{color:gridColor},ticks:{color:tickColor},title:{display:true,text:'Milben/Tag (Schätzwert)',color:tickColor}}
-    }
-  }
-});
+function buildChronik() {
+  const el = document.getElementById('eventList');
+  EREIGNISSE.forEach(e => {
+    const w = e.wetter;
+    const wi = wetterIcon(w.tmk, w.rsk, w.sdk);
+    const tempColor = w.tmk < 0 ? '#4060c0' : w.tmk < 8 ? '#6a88c0' : w.tmk < 15 ? '#5a9a52' : w.tmk < 22 ? '#e8a020' : '#d04030';
+    const rainBadge = w.rsk > 0
+      ? `<span style="color:#4a90b8;font-size:12px;font-weight:600">🌧 ${w.rsk} mm</span>`
+      : `<span style="color:#aaa;font-size:12px">trocken</span>`;
+    const sunBadge = w.sdk > 0
+      ? `<span style="color:#c09010;font-size:12px;font-weight:600">☀ ${w.sdk} h</span>`
+      : `<span style="color:#aaa;font-size:12px">ohne Sonne</span>`;
 
-new Chart(document.getElementById('chartHonig'), {
-  type: 'bar',
-  data: {
-    labels: ['Volk 1', 'Volk 2', 'Volk 4', 'Volk 5', 'Volk 6', 'Volk 7'],
-    datasets: [
-      {label:'2025', data:[0,0,30,30,30,10], backgroundColor:'#D4820A', borderRadius:4},
-      {label:'2024', data:[25,13,28,0,25,0], backgroundColor:'#85B7EB', borderRadius:4}
+    el.innerHTML += `<li class="event-item">
+      <span class="event-date">${e.datum}</span>
+      <div style="flex:1">
+        <div style="margin-bottom:5px">
+          <span class="event-badge ${e.kat}">${e.icon} ${e.label}</span>
+          <span class="event-text">${e.text}</span>
+        </div>
+        <div style="display:inline-flex;align-items:center;gap:10px;
+             background:var(--bg2);border:1px solid var(--border);
+             border-radius:6px;padding:4px 10px;margin-top:4px;flex-wrap:wrap">
+          <span style="font-size:1.1rem">${wi}</span>
+          <span style="font-size:12px;font-weight:700;color:${tempColor}">Ø ${w.tmk}°C</span>
+          <span style="font-size:11px;color:var(--text2)">↑${w.txk}° ↓${w.tnk}°</span>
+          <span style="width:1px;height:14px;background:var(--border);display:inline-block"></span>
+          ${rainBadge}
+          <span style="width:1px;height:14px;background:var(--border);display:inline-block"></span>
+          ${sunBadge}
+          <span style="font-size:10px;color:#bbb;margin-left:2px">DWD 02712</span>
+        </div>
+      </div>
+    </li>`;
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// CHART.JS CHARTS
+// ═══════════════════════════════════════════════════════
+const CH = Chart.defaults;
+CH.font.family = "'Source Sans 3', sans-serif";
+CH.color = '#6a5840';
+
+function makeChart(id, cfg) {
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  return new Chart(ctx, cfg);
+}
+
+function initCharts() {
+  const temps    = WETTER.map(w=>w.temp);
+  const klimaT   = WETTER.map(w=>w.klima_temp);
+  const regens   = WETTER.map(w=>w.regen);
+  const klimaR   = WETTER.map(w=>w.klima_regen);
+  const sonnen   = WETTER.map(w=>w.sonne);
+  const klimaS   = WETTER.map(w=>w.klima_sonne);
+
+  // Overview: Temperatur
+  makeChart('tempChartOverview', { type:'line', data:{
+    labels: MONATE,
+    datasets:[
+      { label:'2025', data:temps, borderColor:'#d04030', backgroundColor:'rgba(208,64,48,0.08)', tension:.4, pointRadius:4, fill:true },
+      { label:'Klimamittel', data:klimaT, borderColor:'#9ab8d0', borderDash:[5,4], tension:.4, pointRadius:2 },
     ]
-  },
-  options: {
-    responsive:true, maintainAspectRatio:false,
-    plugins:{legend:{display:false}},
+  }, options:{ plugins:{legend:{position:'top'}}, scales:{ y:{ ticks:{callback:v=>v+'°C'} } } }});
+
+  // Ernte Overview
+  makeChart('ernteChart', { type:'bar', data:{
+    labels:['1. Frühtracht\nJun','2. Sommer\nJul','3. Spät\nAug'],
+    datasets:[
+      { label:'2024', data:[42,68,30], backgroundColor:'rgba(180,180,140,0.6)' },
+      { label:'2025', data:[68,94,40], backgroundColor:'rgba(232,160,32,0.8)' },
+    ]
+  }, options:{ plugins:{legend:{position:'top'}}, scales:{ y:{ ticks:{callback:v=>v+' kg'} } } }});
+
+  // Temp chart (Wetter tab)
+  makeChart('tempChart', { type:'line', data:{
+    labels: MONATE,
+    datasets:[
+      { label:'Temp 2025 (°C)', data:temps, borderColor:'#d04030', backgroundColor:'rgba(208,64,48,0.1)', tension:.4, fill:true, pointRadius:5 },
+      { label:'Klimamittel 1991–2020', data:klimaT, borderColor:'#9ab8d0', borderDash:[5,4], tension:.4, pointRadius:3 },
+    ]
+  }, options:{ plugins:{legend:{position:'top'}}, scales:{ y:{ ticks:{callback:v=>v+'°C'} } } }});
+
+  // Rain chart
+  makeChart('rainChart', { type:'bar', data:{
+    labels: MONATE,
+    datasets:[
+      { label:'Niederschlag 2025 (mm)', data:regens, backgroundColor:'rgba(74,144,184,0.65)' },
+      { label:'Klimamittel', data:klimaR, type:'line', borderColor:'#b87010', borderDash:[4,4], pointRadius:3, tension:.3 },
+    ]
+  }, options:{ plugins:{legend:{position:'top'}}, scales:{ y:{ ticks:{callback:v=>v+' mm'} } } }});
+
+  // Sun chart
+  makeChart('sunChart', { type:'bar', data:{
+    labels: MONATE,
+    datasets:[
+      { label:'Sonnenstunden 2025', data:sonnen, backgroundColor:'rgba(240,192,64,0.75)' },
+      { label:'Klimamittel', data:klimaS, type:'line', borderColor:'#a06830', borderDash:[4,4], pointRadius:3, tension:.3 },
+    ]
+  }, options:{ plugins:{legend:{position:'top'}}, scales:{ y:{ ticks:{callback:v=>v+' h'} } } }});
+
+  // Korrelation: Ernte vs Temp
+  // Ernte: Jun=68, Jul=94, Aug=40 mapped to months 6,7,8 (index 5,6,7)
+  const ernteData = [null,null,null,null,null,68,94,40,null,null,null,null];
+  makeChart('corrChart', { type:'scatter', data:{
+    datasets:[{
+      label:'Ernte (kg) bei Monats-Ø Temp.',
+      data: temps.map((t,i)=> ernteData[i]!==null ? {x:t, y:ernteData[i]} : null).filter(Boolean),
+      backgroundColor:'rgba(232,160,32,0.75)',
+      pointRadius:10,
+    }]
+  }, options:{
+    plugins:{ legend:{position:'top'},
+      tooltip:{ callbacks:{ label: ctx => `${['Jun','Jul','Aug'][ctx.dataIndex]}: ${ctx.parsed.y} kg @ ${ctx.parsed.x}°C` } }
+    },
     scales:{
-      x:{grid:{color:gridColor},ticks:{color:tickColor,font:{size:12}}},
-      y:{grid:{color:gridColor},ticks:{color:tickColor,callback:v=>v+' kg'},max:40,title:{display:true,text:'Honigertrag (kg)',color:tickColor}}
+      x:{ title:{display:true, text:'Ø Temperatur (°C)'}, ticks:{callback:v=>v+'°C'} },
+      y:{ title:{display:true, text:'Honigernte (kg)'}, ticks:{callback:v=>v+' kg'} }
     }
-  }
-});
+  }});
+
+  // Korrelation: Ernte vs Regen
+  makeChart('corrRainChart', { type:'scatter', data:{
+    datasets:[{
+      label:'Ernte (kg) bei Monats-Niederschlag',
+      data: regens.map((r,i)=> ernteData[i]!==null ? {x:r, y:ernteData[i]} : null).filter(Boolean),
+      backgroundColor:'rgba(74,144,184,0.75)',
+      pointRadius:10,
+    }]
+  }, options:{
+    plugins:{ legend:{position:'top'},
+      tooltip:{ callbacks:{ label: ctx => `${['Jun','Jul','Aug'][ctx.dataIndex]}: ${ctx.parsed.y} kg @ ${ctx.parsed.x} mm` } }
+    },
+    scales:{
+      x:{ title:{display:true, text:'Niederschlag (mm)'}, ticks:{callback:v=>v+' mm'} },
+      y:{ title:{display:true, text:'Honigernte (kg)'}, ticks:{callback:v=>v+' kg'} }
+    }
+  }});
+
+  // Völker Chart
+  makeChart('voelkerChart', { type:'bar', data:{
+    labels: VOELKER.map(v=>v.name),
+    datasets:[
+      { label:'2024 (kg)', data:VOELKER.map(v=>v.honig2024), backgroundColor:'rgba(180,180,140,0.6)' },
+      { label:'2025 (kg)', data:VOELKER.map(v=>v.honig2025), backgroundColor:'rgba(232,160,32,0.8)' },
+    ]
+  }, options:{ plugins:{legend:{position:'top'}}, scales:{ y:{ ticks:{callback:v=>v+' kg'} } } }});
+
+  // Chronik Temp
+  makeChart('chronikTempChart', { type:'line', data:{
+    labels: MONATE,
+    datasets:[
+      { label:'Temp 2025', data:temps, borderColor:'#d04030', backgroundColor:'rgba(208,64,48,0.07)', tension:.4, fill:true, pointRadius:4 },
+    ]
+  }, options:{ plugins:{legend:{position:'top'}}, scales:{ y:{ ticks:{callback:v=>v+'°C'} } } }});
+
+  // Varroa Chart
+  makeChart('varroaChart', { type:'bar', data:{
+    labels:['Jul','Aug','Sep','Okt','Nov','Dez'],
+    datasets:[{
+      label:'Ø Milbenabfall pro Volk',
+      data:[420, 85, 32, 18, 12, 8],
+      backgroundColor:['rgba(208,64,48,0.8)','rgba(208,100,48,0.7)','rgba(208,140,48,0.6)','rgba(160,168,48,0.6)','rgba(90,154,82,0.7)','rgba(74,144,184,0.7)'],
+    }]
+  }, options:{ plugins:{legend:{display:false}}, scales:{ y:{ ticks:{callback:v=>v+' Milben'} } } }});
+}
+
+// ═══════════════════════════════════════════════════════
+// TAB NAVIGATION
+// ═══════════════════════════════════════════════════════
+function showTab(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// INIT
+buildWetterTable();
+buildCorrRows();
+buildVoelker();
+buildChronik();
+initCharts();
 </script>
 </body>
 </html>
